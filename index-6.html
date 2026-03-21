@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#060d1a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BD Monitor">
+<title>Bipolar Monitor Pro</title>
+<style>
+:root{
+  --bg:#060d1a;--surface:#0c1829;--surface2:#112240;--surface3:#162d4a;
+  --border:#1e3a5f;--border2:#254d7a;
+  --accent:#00b4d8;--accent2:#0077b6;--accent3:#00d4ff;
+  --green:#00f5a0;--yellow:#ffd60a;--orange:#ff9500;--red:#ff3b5c;--purple:#a855f7;
+  --teal:#06d6a0;--pink:#f72585;
+  --text:#e2f0ff;--muted:#5b8db8;--muted2:#3a6a96;
+  --mono:'IBM Plex Mono',monospace;--font:'IBM Plex Sans Arabic',sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(0,119,182,.18),transparent),
+  radial-gradient(ellipse 50% 30% at 100% 100%,rgba(0,180,216,.06),transparent);}
+
+/* ─── NAV ─── */
+.nav{background:rgba(6,13,26,.95);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:200;}
+.nav-inner{max-width:1040px;margin:0 auto;padding:0 12px;display:flex;align-items:center;gap:8px;}
+.logo{display:flex;align-items:center;gap:9px;padding:12px 0;flex-shrink:0;}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent2),var(--accent3));
+  border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.logo h1{font-size:14px;font-weight:700;white-space:nowrap;}
+.logo p{font-size:9px;color:var(--muted);font-family:var(--mono);}
+.nav-tabs{display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none;}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.tab-btn{padding:7px 11px;background:transparent;border:none;color:var(--muted);
+  font-family:var(--font);font-size:12px;cursor:pointer;border-radius:7px;
+  transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0;}
+.tab-btn:hover{background:var(--surface2);color:var(--text);}
+.tab-btn.active{background:var(--surface2);color:var(--accent);border:1px solid var(--border);}
+.nav-right{display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.nav-badge{background:var(--surface2);border:1px solid var(--border);padding:5px 11px;
+  border-radius:20px;font-size:10px;color:var(--muted);font-family:var(--mono);white-space:nowrap;}
+.nav-badge span{color:var(--accent);font-weight:700;}
+.key-btn{padding:5px 10px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:7px;font-size:10px;cursor:pointer;color:var(--muted);
+  font-family:var(--mono);transition:all .2s;display:flex;align-items:center;gap:4px;white-space:nowrap;}
+.key-btn.has-key{border-color:rgba(0,245,160,.4);color:var(--green);background:rgba(0,245,160,.07);}
+.key-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ─── PAGES ─── */
+.page{display:none;max-width:1040px;margin:0 auto;padding:20px 12px 40px;animation:fadeUp .3s ease;}
+.page.active{display:grid;gap:16px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── CARDS ─── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:18px;position:relative;overflow:hidden;}
+.card::after{content:'';position:absolute;top:0;right:0;width:70px;height:70px;
+  background:radial-gradient(circle,rgba(0,180,216,.05),transparent 70%);pointer-events:none;}
+.card-title{font-size:14px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.card-label{font-size:10px;color:var(--muted);font-family:var(--mono);text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:5px;}
+.card-value{font-size:24px;font-weight:700;font-family:var(--mono);line-height:1.1;}
+.card-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+.bar{height:4px;background:var(--surface2);border-radius:2px;margin-top:9px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:2px;transition:width .9s cubic-bezier(.4,0,.2,1);}
+.divider{height:1px;background:var(--border);margin:14px 0;}
+.section-head{font-size:12px;font-weight:600;color:var(--accent);margin-bottom:12px;
+  padding-bottom:9px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px;}
+
+/* ─── GRIDS ─── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@media(max-width:680px){.g4{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}}
+@media(max-width:380px){.g4,.g3{grid-template-columns:1fr}}
+
+/* ─── RISK BANNER ─── */
+.risk-banner{border-radius:var(--r);padding:18px 22px;display:flex;align-items:center;
+  justify-content:space-between;border:1px solid transparent;transition:all .4s;}
+.risk-banner.safe{background:rgba(0,245,160,.07);border-color:rgba(0,245,160,.2);}
+.risk-banner.low{background:rgba(255,214,10,.07);border-color:rgba(255,214,10,.2);}
+.risk-banner.moderate{background:rgba(255,149,0,.08);border-color:rgba(255,149,0,.25);}
+.risk-banner.high{background:rgba(255,59,92,.1);border-color:rgba(255,59,92,.3);}
+.risk-left{display:flex;align-items:center;gap:14px;}
+.risk-icon{font-size:28px;}
+.risk-label{font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:2px;}
+.risk-status{font-size:19px;font-weight:700;}
+.risk-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+.risk-right{text-align:center;}
+.risk-score-num{font-size:42px;font-weight:700;font-family:var(--mono);line-height:1;}
+.risk-score-lbl{font-size:9px;color:var(--muted);font-family:var(--mono);}
+
+/* ─── PREDICTOR ─── */
+.pred-box{border-radius:var(--r);padding:18px;border:1px solid;transition:all .4s;}
+.pred-box.stable{background:rgba(0,245,160,.05);border-color:rgba(0,245,160,.2);}
+.pred-box.watch{background:rgba(255,214,10,.06);border-color:rgba(255,214,10,.25);}
+.pred-box.warning{background:rgba(255,149,0,.08);border-color:rgba(255,149,0,.3);}
+.pred-box.alert{background:rgba(255,59,92,.1);border-color:rgba(255,59,92,.35);animation:pulse-border 2s infinite;}
+@keyframes pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(255,59,92,.15)}50%{box-shadow:0 0 0 6px rgba(255,59,92,0)}}
+.pred-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;}
+.pred-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;font-family:var(--mono);flex-shrink:0;}
+.signal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;}
+@media(max-width:480px){.signal-grid{grid-template-columns:1fr 1fr;}}
+.sig-card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:9px;padding:10px;}
+.sig-name{font-size:9px;color:var(--muted);font-family:var(--mono);margin-bottom:3px;}
+.sig-val{font-size:17px;font-weight:700;font-family:var(--mono);}
+
+/* ─── FORM ELEMENTS ─── */
+.field{display:flex;flex-direction:column;gap:6px;}
+.field-label{font-size:11px;color:var(--muted);font-family:var(--mono);}
+.field-label.required::after{content:' *';color:var(--red);}
+input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:var(--surface2);
+  border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;
+  border-radius:50%;background:var(--accent);cursor:pointer;
+  box-shadow:0 0 8px rgba(0,180,216,.5);transition:transform .1s;}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.3);}
+.sval{font-family:var(--mono);font-size:13px;font-weight:600;min-width:28px;text-align:center;color:var(--accent);}
+.slider-wrap{display:flex;align-items:center;gap:8px;}
+
+input[type=text],input[type=number],input[type=date],input[type=email],
+select,textarea{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:9px;padding:9px 12px;color:var(--text);font-family:var(--font);
+  font-size:13px;outline:none;transition:border-color .2s;
+  -webkit-appearance:none;}
+input[type=text]:focus,input[type=number]:focus,input[type=date]:focus,
+input[type=email]:focus,select:focus,textarea:focus{border-color:var(--accent);}
+input[type=date]{direction:ltr;text-align:right;}
+select option{background:var(--surface2);}
+textarea{resize:vertical;min-height:80px;line-height:1.6;}
+::placeholder{color:var(--muted2);}
+
+.fast-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+@media(max-width:500px){.fast-grid{grid-template-columns:1fr 1fr;}}
+.fast-btn{padding:9px 4px;background:var(--surface2);border:2px solid var(--border);
+  border-radius:9px;color:var(--muted);font-family:var(--mono);font-size:13px;
+  cursor:pointer;text-align:center;transition:all .15s;line-height:1.3;}
+.fast-btn.selected{border-color:var(--accent);background:rgba(0,180,216,.12);color:var(--accent);}
+.toggle-group{display:flex;gap:6px;}
+.toggle-btn{flex:1;padding:9px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;font-family:var(--font);font-size:12px;cursor:pointer;color:var(--muted);transition:all .15s;}
+.toggle-btn.yes{background:rgba(0,245,160,.1);border-color:var(--green);color:var(--green);}
+.toggle-btn.no{background:rgba(255,59,92,.1);border-color:var(--red);color:var(--red);}
+
+.submit-btn{width:100%;margin-top:16px;padding:13px;border:none;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .15s,box-shadow .15s;box-shadow:0 4px 18px rgba(0,180,216,.25);}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 6px 26px rgba(0,180,216,.35);}
+.submit-btn:active{transform:translateY(0);}
+
+/* ─── BUTTONS ─── */
+.btn{padding:8px 16px;border-radius:8px;font-family:var(--font);font-size:12px;
+  cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;
+  border:1px solid var(--border);}
+.btn-ghost{background:var(--surface2);color:var(--text);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-primary{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;
+  border:none;box-shadow:0 3px 12px rgba(0,180,216,.2);}
+.btn-primary:hover{box-shadow:0 4px 18px rgba(0,180,216,.35);transform:translateY(-1px);}
+.btn-purple{background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;
+  box-shadow:0 3px 12px rgba(168,85,247,.2);}
+.btn-purple:hover{box-shadow:0 4px 18px rgba(168,85,247,.35);transform:translateY(-1px);}
+.btn-teal{background:linear-gradient(135deg,#059669,var(--teal));color:#fff;border:none;
+  box-shadow:0 3px 12px rgba(6,214,160,.2);}
+.btn-teal:hover{box-shadow:0 4px 18px rgba(6,214,160,.35);transform:translateY(-1px);}
+.btn-red-soft{color:var(--red);border-color:rgba(255,59,92,.3);}
+.btn-red-soft:hover{background:rgba(255,59,92,.08);}
+.btn[disabled]{opacity:.4;cursor:not-allowed;transform:none !important;}
+
+/* ─── CHART ─── */
+.chart-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+.legend{display:flex;gap:12px;flex-wrap:wrap;}
+.leg{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted);}
+.leg-dot{width:7px;height:7px;border-radius:50%;}
+canvas{width:100% !important;display:block;border-radius:8px;}
+
+/* ─── HISTORY ─── */
+.hist-list{display:flex;flex-direction:column;gap:5px;max-height:300px;overflow-y:auto;}
+.hist-list::-webkit-scrollbar{width:3px;}
+.hist-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.hist-row{display:flex;align-items:center;justify-content:space-between;padding:9px 11px;
+  background:var(--surface2);border-radius:7px;border:1px solid var(--border);font-size:11px;
+  transition:border-color .2s;}
+.hist-row:hover{border-color:var(--border2);}
+.hist-date{color:var(--muted);font-family:var(--mono);font-size:9px;min-width:75px;}
+.chips{display:flex;gap:5px;flex-wrap:wrap;}
+.chip{padding:2px 6px;border-radius:3px;background:rgba(255,255,255,.04);
+  font-family:var(--mono);font-size:9px;color:var(--muted);}
+.chip.yes{color:var(--green);}.chip.no{color:var(--red);}
+
+/* ─── PATIENT PROFILE ─── */
+.profile-header{background:linear-gradient(135deg,rgba(0,119,182,.15),rgba(6,214,160,.08));
+  border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;
+  display:flex;align-items:center;gap:18px;}
+.profile-avatar{width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent2),var(--teal));
+  display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;
+  border:2px solid rgba(0,180,216,.3);}
+.profile-name{font-size:20px;font-weight:700;margin-bottom:4px;}
+.profile-meta{font-size:12px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;}
+.profile-meta span{display:flex;align-items:center;gap:4px;}
+.profile-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;
+  font-weight:600;font-family:var(--mono);}
+.pb-bd1{background:rgba(255,59,92,.12);color:var(--red);border:1px solid rgba(255,59,92,.3);}
+.pb-bd2{background:rgba(255,149,0,.1);color:var(--orange);border:1px solid rgba(255,149,0,.3);}
+.pb-bdm{background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.3);}
+.pb-nos{background:rgba(91,141,184,.1);color:var(--muted);border:1px solid var(--border);}
+
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+@media(max-width:600px){.info-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:380px){.info-grid{grid-template-columns:1fr;}}
+.info-item{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:12px;}
+.info-key{font-size:9px;color:var(--muted2);font-family:var(--mono);text-transform:uppercase;
+  letter-spacing:.8px;margin-bottom:5px;}
+.info-val{font-size:13px;font-weight:600;color:var(--text);}
+.info-val.empty{color:var(--muted2);font-weight:400;font-style:italic;}
+
+.med-list{display:flex;flex-direction:column;gap:7px;}
+.med-item{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:9px;font-size:12px;}
+.med-info{display:flex;flex-direction:column;gap:2px;}
+.med-name{font-weight:600;color:var(--text);}
+.med-dose{font-size:10px;color:var(--muted);font-family:var(--mono);}
+.med-del{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:14px;
+  padding:4px;border-radius:5px;transition:color .15s;}
+.med-del:hover{color:var(--red);}
+.add-med-row{display:flex;gap:8px;margin-top:10px;}
+
+.episode-list{display:flex;flex-direction:column;gap:7px;}
+.ep-item{padding:11px 13px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:9px;display:flex;align-items:center;justify-content:space-between;}
+.ep-info{display:flex;flex-direction:column;gap:3px;}
+.ep-type{font-size:12px;font-weight:600;}
+.ep-dates{font-size:10px;color:var(--muted);font-family:var(--mono);}
+.ep-del{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:14px;padding:4px;border-radius:5px;}
+.ep-del:hover{color:var(--red);}
+
+.tag-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.tag{padding:4px 10px;background:rgba(0,180,216,.1);border:1px solid rgba(0,180,216,.25);
+  border-radius:20px;font-size:11px;color:var(--accent);display:flex;align-items:center;gap:5px;}
+.tag-rm{background:none;border:none;color:var(--accent);cursor:pointer;font-size:12px;
+  line-height:1;padding:0;opacity:.7;}
+.tag-rm:hover{opacity:1;}
+
+/* ─── SOAP ─── */
+.soap-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.soap-hdr{padding:14px 18px;background:linear-gradient(90deg,rgba(168,85,247,.1),rgba(0,119,182,.06));
+  border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.ai-badge{background:linear-gradient(135deg,#7c3aed,#a855f7);padding:3px 9px;border-radius:20px;
+  font-size:10px;font-weight:700;font-family:var(--mono);}
+.soap-block{padding:14px 18px;border-bottom:1px solid var(--border);}
+.soap-block:last-child{border-bottom:none;}
+.soap-lbl{font-size:9px;font-family:var(--mono);text-transform:uppercase;letter-spacing:1.5px;
+  margin-bottom:7px;padding:2px 7px;border-radius:3px;display:inline-block;}
+.soap-S .soap-lbl{background:rgba(0,180,216,.12);color:var(--accent);}
+.soap-O .soap-lbl{background:rgba(0,245,160,.1);color:var(--green);}
+.soap-A .soap-lbl{background:rgba(255,149,0,.1);color:var(--orange);}
+.soap-P .soap-lbl{background:rgba(168,85,247,.12);color:var(--purple);}
+.soap-text{font-size:13px;line-height:1.85;white-space:pre-wrap;}
+.soap-empty{padding:36px 18px;text-align:center;color:var(--muted);font-size:13px;}
+
+/* ─── EXPORT ─── */
+.export-row{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:10px;}
+.export-info{font-size:13px;}
+.export-info small{display:block;font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* ─── LOADING ─── */
+.loading-wrap{display:flex;align-items:center;gap:10px;padding:20px;color:var(--muted);font-size:13px;}
+.dots{display:flex;gap:4px;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--purple);animation:blink 1.2s infinite;}
+.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,100%{opacity:.2;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
+
+/* ─── MODAL ─── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+  z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;
+  opacity:0;pointer-events:none;transition:opacity .25s;}
+.modal-overlay.show{opacity:1;pointer-events:all;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:18px;
+  padding:26px;max-width:420px;width:100%;box-shadow:0 24px 60px rgba(0,0,0,.5);
+  transform:translateY(14px);transition:transform .25s;}
+.modal-overlay.show .modal{transform:translateY(0);}
+.modal-icon{font-size:34px;margin-bottom:12px;text-align:center;}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:5px;text-align:center;}
+.modal-sub{font-size:12px;color:var(--muted);text-align:center;line-height:1.7;margin-bottom:18px;}
+.modal-input-wrap{position:relative;margin-bottom:8px;}
+.modal-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;
+  padding:11px 14px 11px 42px;color:var(--text);font-family:var(--mono);font-size:13px;
+  outline:none;transition:border-color .2s;direction:ltr;text-align:left;}
+.modal-input:focus{border-color:var(--accent);}
+.modal-eye{position:absolute;left:11px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px;}
+.modal-hint{font-size:10px;color:var(--muted);line-height:1.7;margin-top:11px;
+  padding:9px 11px;background:rgba(0,119,182,.08);border-radius:8px;border:1px solid rgba(0,119,182,.15);}
+.modal-hint a{color:var(--accent);text-decoration:none;}
+
+/* ─── ALERTS ─── */
+.alert-box{padding:11px 14px;border-radius:9px;font-size:12px;display:flex;align-items:flex-start;gap:8px;}
+.alert-box.info{background:rgba(0,180,216,.07);border:1px solid rgba(0,180,216,.2);color:var(--accent);}
+.alert-box.warn{background:rgba(255,149,0,.07);border:1px solid rgba(255,149,0,.25);color:var(--orange);}
+.alert-box.danger{background:rgba(255,59,92,.09);border:1px solid rgba(255,59,92,.28);color:var(--red);}
+.alert-box.success{background:rgba(0,245,160,.07);border:1px solid rgba(0,245,160,.2);color:var(--green);}
+
+/* ─── TOAST ─── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:var(--surface2);border:1px solid var(--border);padding:10px 18px;
+  border-radius:10px;font-size:13px;transition:transform .3s cubic-bezier(.4,0,.2,1);
+  z-index:9999;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,.4);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* ─── MISC ─── */
+.empty{text-align:center;padding:36px 16px;color:var(--muted);}
+.empty-icon{font-size:32px;margin-bottom:10px;}
+
+/* ─── PWA INSTALL BANNER ─── */
+.install-banner{background:linear-gradient(135deg,rgba(0,119,182,.12),rgba(6,214,160,.08));
+  border:1px solid rgba(0,180,216,.2);border-radius:var(--r);padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.install-banner.hidden{display:none;}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="logo">
+      <div class="logo-icon">🧠</div>
+      <div>
+        <h1>Bipolar Monitor Pro</h1>
+        <p>v4.0 — Clinical Edition</p>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('dashboard',this)">📊 <span>لوحة التحكم</span></button>
+      <button class="tab-btn" onclick="switchTab('patient',this)">👤 <span>ملف المريض</span></button>
+      <button class="tab-btn" onclick="switchTab('predictor',this)">🔮 <span>التنبؤ</span></button>
+      <button class="tab-btn" onclick="switchTab('input',this)">✏️ <span>الإدخال</span></button>
+      <button class="tab-btn" onclick="switchTab('soap',this)">📋 <span>SOAP</span></button>
+      <button class="tab-btn" onclick="switchTab('export',this)">⬇️ <span>تصدير</span></button>
+    </div>
+    <div class="nav-right">
+      <button class="key-btn" id="keyBtn" onclick="openKeyModal()">🔑 <span id="keyBtnLbl">API Key</span></button>
+      <div class="nav-badge"><span id="recCount">0</span> سجل</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════ TAB: DASHBOARD ══════════════════════════════ -->
+<div class="page active" id="tab-dashboard">
+
+  <div class="install-banner hidden" id="installBanner">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:22px;">📲</span>
+      <div>
+        <div style="font-size:13px;font-weight:600;">ثبّت التطبيق على هاتفك</div>
+        <div style="font-size:11px;color:var(--muted);">للوصول السريع بدون متصفح</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" onclick="installApp()" style="padding:7px 14px;font-size:12px;">تثبيت</button>
+      <button class="btn btn-ghost" onclick="dismissInstall()" style="padding:7px 10px;font-size:12px;">✕</button>
+    </div>
+  </div>
+
+  <div class="risk-banner safe" id="riskBanner">
+    <div class="risk-left">
+      <div class="risk-icon" id="riskIcon">⚪</div>
+      <div>
+        <div class="risk-label">الحالة الراهنة</div>
+        <div class="risk-status" id="riskStatus">بيانات غير كافية</div>
+        <div class="risk-desc" id="riskDesc">أدخل 3 سجلات على الأقل لبدء التحليل</div>
+      </div>
+    </div>
+    <div class="risk-right">
+      <div class="risk-score-num" id="riskScoreNum" style="color:var(--muted)">—</div>
+      <div class="risk-score-lbl">Risk Score %</div>
+    </div>
+  </div>
+
+  <div class="g4">
+    <div class="card">
+      <div class="card-label">BSI — الاستقرار</div>
+      <div class="card-value" id="m-bsi" style="color:var(--green)">—</div>
+      <div class="card-sub">Stability Index</div>
+      <div class="bar"><div class="bar-fill" id="b-bsi" style="width:0%;background:var(--green)"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-label">المزاج — اليوم</div>
+      <div class="card-value" id="m-mood" style="color:var(--accent)">—</div>
+      <div class="card-sub" id="m-mood-trend">اتجاه: —</div>
+      <div class="bar"><div class="bar-fill" id="b-mood" style="width:0%;background:var(--accent)"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-label">النوم</div>
+      <div class="card-value" id="m-sleep" style="color:var(--yellow)">—</div>
+      <div class="card-sub" id="m-sleep-debt">دين النوم: —</div>
+      <div class="bar"><div class="bar-fill" id="b-sleep" style="width:0%;background:var(--yellow)"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-label">FAST — الأداء</div>
+      <div class="card-value" id="m-fast" style="color:var(--purple)">—</div>
+      <div class="card-sub" id="m-fast-lbl">Functional Score</div>
+      <div class="bar"><div class="bar-fill" id="b-fast" style="width:0%;background:var(--purple)"></div></div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-header">
+      <div style="font-size:13px;font-weight:600;">📈 آخر 21 يوم</div>
+      <div class="legend">
+        <div class="leg"><div class="leg-dot" style="background:var(--accent)"></div>مزاج</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--yellow)"></div>نوم</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>طاقة</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--purple)"></div>FAST</div>
+      </div>
+    </div>
+    <canvas id="mainChart" height="200"></canvas>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">📋 السجل التاريخي
+        <button class="btn btn-ghost" style="margin-right:auto;padding:4px 10px;font-size:10px;" onclick="loadDemo()">بيانات تجريبية</button>
+      </div>
+      <div class="hist-list" id="histList">
+        <div class="empty"><div class="empty-icon">📂</div><p>لا توجد سجلات بعد</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">💊 الالتزام الدوائي (14 يوم)</div>
+      <div id="medDots"></div>
+      <div class="divider"></div>
+      <div class="card-label">معدل الالتزام</div>
+      <div class="card-value" id="medAdherence" style="color:var(--green)">—</div>
+      <div class="card-sub" id="medAdherenceSub">لا بيانات</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════ TAB: PATIENT ══════════════════════════════ -->
+<div class="page" id="tab-patient">
+
+  <!-- Profile Header -->
+  <div class="profile-header" id="profileHeader">
+    <div class="profile-avatar" id="profileAvatar">👤</div>
+    <div style="flex:1;min-width:0;">
+      <div class="profile-name" id="profileName">لم يتم إنشاء ملف بعد</div>
+      <div class="profile-meta" id="profileMeta">
+        <span>ابدأ بملء البيانات أدناه</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Info -->
+  <div class="info-grid" id="profileInfoGrid">
+    <div class="info-item"><div class="info-key">تاريخ الميلاد</div><div class="info-val empty" id="pi-dob">—</div></div>
+    <div class="info-item"><div class="info-key">العمر</div><div class="info-val empty" id="pi-age">—</div></div>
+    <div class="info-item"><div class="info-key">الجنس</div><div class="info-val empty" id="pi-gender">—</div></div>
+    <div class="info-item"><div class="info-key">الحالة الاجتماعية</div><div class="info-val empty" id="pi-marital">—</div></div>
+    <div class="info-item"><div class="info-key">المهنة</div><div class="info-val empty" id="pi-job">—</div></div>
+    <div class="info-item"><div class="info-key">مستوى التعليم</div><div class="info-val empty" id="pi-edu">—</div></div>
+    <div class="info-item"><div class="info-key">نوع الاضطراب</div><div class="info-val empty" id="pi-bdtype">—</div></div>
+    <div class="info-item"><div class="info-key">تاريخ التشخيص</div><div class="info-val empty" id="pi-diagdate">—</div></div>
+    <div class="info-item"><div class="info-key">أول نوبة</div><div class="info-val empty" id="pi-firstepisode">—</div></div>
+  </div>
+
+  <!-- Form tabs inside patient -->
+  <div class="card">
+    <div style="display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;">
+      <button class="tab-btn active" id="pf-tab-basic"    onclick="switchProfileTab('basic',this)"    style="font-size:11px;padding:6px 10px;">👤 الأساسية</button>
+      <button class="tab-btn"        id="pf-tab-clinical" onclick="switchProfileTab('clinical',this)" style="font-size:11px;padding:6px 10px;">🏥 السريرية</button>
+      <button class="tab-btn"        id="pf-tab-meds"     onclick="switchProfileTab('meds',this)"     style="font-size:11px;padding:6px 10px;">💊 الأدوية</button>
+      <button class="tab-btn"        id="pf-tab-episodes" onclick="switchProfileTab('episodes',this)" style="font-size:11px;padding:6px 10px;">📅 النوبات</button>
+      <button class="tab-btn"        id="pf-tab-social"   onclick="switchProfileTab('social',this)"   style="font-size:11px;padding:6px 10px;">🏠 الاجتماعية</button>
+    </div>
+
+    <!-- BASIC -->
+    <div id="pf-basic">
+      <div class="section-head">👤 البيانات الشخصية الأساسية</div>
+      <div class="g3" style="margin-bottom:12px;">
+        <div class="field"><div class="field-label required">الاسم الكامل</div><input type="text" id="pf-name" placeholder="اسم المريض"></div>
+        <div class="field"><div class="field-label">رقم الملف</div><input type="text" id="pf-id" placeholder="ID-001"></div>
+        <div class="field"><div class="field-label required">تاريخ الميلاد</div><input type="date" id="pf-dob"></div>
+        <div class="field"><div class="field-label">الجنس</div>
+          <select id="pf-gender">
+            <option value="">اختر...</option>
+            <option value="ذكر">ذكر</option>
+            <option value="أنثى">أنثى</option>
+          </select>
+        </div>
+        <div class="field"><div class="field-label">الحالة الاجتماعية</div>
+          <select id="pf-marital">
+            <option value="">اختر...</option>
+            <option value="أعزب">أعزب / عزباء</option>
+            <option value="متزوج">متزوج / متزوجة</option>
+            <option value="مطلق">مطلق / مطلقة</option>
+            <option value="أرمل">أرمل / أرملة</option>
+          </select>
+        </div>
+        <div class="field"><div class="field-label">عدد الأطفال</div><input type="number" id="pf-children" min="0" max="20" placeholder="0"></div>
+        <div class="field"><div class="field-label">المهنة</div><input type="text" id="pf-job" placeholder="طبيب، مهندس، موظف..."></div>
+        <div class="field"><div class="field-label">مستوى التعليم</div>
+          <select id="pf-edu">
+            <option value="">اختر...</option>
+            <option value="ابتدائي">ابتدائي</option>
+            <option value="متوسط">متوسط</option>
+            <option value="ثانوي">ثانوي</option>
+            <option value="جامعي">جامعي</option>
+            <option value="دراسات عليا">دراسات عليا</option>
+          </select>
+        </div>
+        <div class="field"><div class="field-label">رقم الهاتف</div><input type="text" id="pf-phone" placeholder="0555..."></div>
+      </div>
+      <div class="field"><div class="field-label">العنوان / المدينة</div><input type="text" id="pf-address" placeholder="الجزائر العاصمة..."></div>
+    </div>
+
+    <!-- CLINICAL -->
+    <div id="pf-clinical" style="display:none;">
+      <div class="section-head">🏥 البيانات السريرية</div>
+      <div class="g3" style="margin-bottom:12px;">
+        <div class="field"><div class="field-label required">نوع الاضطراب</div>
+          <select id="pf-bdtype">
+            <option value="">اختر...</option>
+            <option value="BD-I">Bipolar I — ثنائي القطب النوع الأول</option>
+            <option value="BD-II">Bipolar II — ثنائي القطب النوع الثاني</option>
+            <option value="BD-Mixed">Bipolar Mixed — مختلط</option>
+            <option value="BD-NOS">BD-NOS — غير محدد</option>
+            <option value="Cyclothymia">Cyclothymia — دوروية المزاج</option>
+          </select>
+        </div>
+        <div class="field"><div class="field-label">تاريخ التشخيص</div><input type="date" id="pf-diagdate"></div>
+        <div class="field"><div class="field-label">تاريخ أول نوبة</div><input type="date" id="pf-firstepisode"></div>
+        <div class="field"><div class="field-label">طبيب سابق</div><input type="text" id="pf-prevdoc" placeholder="د. محمد..."></div>
+        <div class="field"><div class="field-label">عدد الاستشفاءات</div><input type="number" id="pf-hosp" min="0" placeholder="0"></div>
+        <div class="field"><div class="field-label">محاولات انتحارية</div>
+          <select id="pf-suicide">
+            <option value="لا">لا</option>
+            <option value="نعم - واحدة">نعم — واحدة</option>
+            <option value="نعم - متعددة">نعم — متعددة</option>
+          </select>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="section-head" style="margin-top:0;">🧬 الأمراض المصاحبة</div>
+      <div id="comorb-tags" class="tag-list" style="margin-bottom:10px;"></div>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="comorb-input" placeholder="اكتب الاسم + Enter (مثل: قلق، سكري...)" style="flex:1;" onkeydown="addTag(event,'comorb')">
+        <button class="btn btn-ghost" onclick="addTagBtn('comorb')">إضافة</button>
+      </div>
+      <div class="divider"></div>
+      <div class="section-head" style="margin-top:0;">⚠️ الحساسية والممنوعات</div>
+      <div id="allergy-tags" class="tag-list" style="margin-bottom:10px;"></div>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="allergy-input" placeholder="دواء أو مادة..." style="flex:1;" onkeydown="addTag(event,'allergy')">
+        <button class="btn btn-ghost" onclick="addTagBtn('allergy')">إضافة</button>
+      </div>
+      <div class="divider"></div>
+      <div class="field"><div class="field-label">ملاحظات سريرية</div>
+        <textarea id="pf-clinicalnotes" placeholder="ملاحظات الطبيب — الحالة العامة، مخاوف خاصة..."></textarea>
+      </div>
+    </div>
+
+    <!-- MEDICATIONS -->
+    <div id="pf-meds" style="display:none;">
+      <div class="section-head">💊 الأدوية الحالية</div>
+      <div class="med-list" id="medList"><div style="font-size:12px;color:var(--muted);padding:12px 0;">لا توجد أدوية مُسجَّلة</div></div>
+      <div class="divider"></div>
+      <div class="section-head" style="margin-top:0;">➕ إضافة دواء</div>
+      <div class="g3" style="margin-bottom:10px;">
+        <div class="field"><div class="field-label">اسم الدواء</div><input type="text" id="med-name" placeholder="Lithium, Valproate..."></div>
+        <div class="field"><div class="field-label">الجرعة</div><input type="text" id="med-dose" placeholder="600mg / مرة / يومياً"></div>
+        <div class="field"><div class="field-label">الفئة</div>
+          <select id="med-class">
+            <option value="مثبّت مزاج">مثبّت مزاج</option>
+            <option value="مضاد ذهان">مضاد ذهان</option>
+            <option value="مضاد اكتئاب">مضاد اكتئاب</option>
+            <option value="مضاد قلق">مضاد قلق</option>
+            <option value="منوّم">منوّم</option>
+            <option value="أخرى">أخرى</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-teal" onclick="addMedication()" style="width:100%;">💊 إضافة الدواء</button>
+    </div>
+
+    <!-- EPISODES -->
+    <div id="pf-episodes" style="display:none;">
+      <div class="section-head">📅 سجل النوبات السابقة</div>
+      <div class="episode-list" id="episodeList"><div style="font-size:12px;color:var(--muted);padding:12px 0;">لا توجد نوبات مُسجَّلة</div></div>
+      <div class="divider"></div>
+      <div class="section-head" style="margin-top:0;">➕ تسجيل نوبة</div>
+      <div class="g3" style="margin-bottom:10px;">
+        <div class="field"><div class="field-label">نوع النوبة</div>
+          <select id="ep-type">
+            <option value="هوس / Mania">هوس / Mania</option>
+            <option value="هيبومانيا / Hypomania">هيبومانيا / Hypomania</option>
+            <option value="اكتئاب / Depression">اكتئاب / Depression</option>
+            <option value="مختلط / Mixed">مختلط / Mixed</option>
+            <option value="تعافٍ / Remission">تعافٍ / Remission</option>
+          </select>
+        </div>
+        <div class="field"><div class="field-label">تاريخ البداية</div><input type="date" id="ep-start"></div>
+        <div class="field"><div class="field-label">تاريخ الانتهاء</div><input type="date" id="ep-end" placeholder="اتركه فارغاً إن كانت جارية"></div>
+      </div>
+      <div class="field" style="margin-bottom:10px;"><div class="field-label">ملاحظات</div>
+        <input type="text" id="ep-note" placeholder="اسبب مُحتملة، علاج مُعطى...">
+      </div>
+      <button class="btn btn-primary" onclick="addEpisode()" style="width:100%;">📅 تسجيل النوبة</button>
+    </div>
+
+    <!-- SOCIAL -->
+    <div id="pf-social" style="display:none;">
+      <div class="section-head">🏠 الوضع الاجتماعي والدعم</div>
+      <div class="g3" style="margin-bottom:12px;">
+        <div class="field"><div class="field-label">وضع السكن</div>
+          <select id="pf-living">
+            <option value="">اختر...</option>
+            <option value="مع الأسرة">مع الأسرة</option>
+            <option value="مستقل">مستقل</option>
+            <option value="مع شريك">مع شريك</option>
+            <option value="دار رعاية">دار رعاية</option>
+          </select>
+        </div>
+        <div class="field"><div class="field-label">الوضع المهني</div>
+          <select id="pf-empstatus">
+            <option value="">اختر...</option>
+            <option value="يعمل">يعمل</option>
+            <option value="عاطل">عاطل</option>
+            <option value="متقاعد">متقاعد</option>
+            <option value="طالب">طالب</option>
+            <option value="عاجز عن العمل">عاجز عن العمل</option>
+          </select>
+        </div>
+        <div class="field"><div class="field-label">الدعم الاجتماعي</div>
+          <select id="pf-support">
+            <option value="">اختر...</option>
+            <option value="قوي">قوي — أسرة داعمة</option>
+            <option value="متوسط">متوسط</option>
+            <option value="ضعيف">ضعيف</option>
+            <option value="معدوم">معدوم</option>
+          </select>
+        </div>
+        <div class="field"><div class="field-label">اسم المسؤول / ولي الأمر</div><input type="text" id="pf-guardian" placeholder="الأب، الزوجة..."></div>
+        <div class="field"><div class="field-label">هاتف الطوارئ</div><input type="text" id="pf-emergency" placeholder="0555..."></div>
+        <div class="field"><div class="field-label">تعاطي المواد</div>
+          <select id="pf-substances">
+            <option value="لا">لا</option>
+            <option value="تبغ فقط">تبغ فقط</option>
+            <option value="كحول">كحول</option>
+            <option value="مواد أخرى">مواد أخرى</option>
+            <option value="متعدد">متعدد</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><div class="field-label">هوايات ونقاط قوة</div>
+        <input type="text" id="pf-hobbies" placeholder="قراءة، رياضة، موسيقى...">
+      </div>
+      <div class="field" style="margin-top:10px;"><div class="field-label">ملاحظات اجتماعية</div>
+        <textarea id="pf-socialnotes" placeholder="ملاحظات حول البيئة الاجتماعية للمريض..."></textarea>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="saveProfile()" style="flex:1;">💾 حفظ بيانات المريض</button>
+      <button class="btn btn-ghost btn-red-soft" onclick="clearProfile()">🗑️ مسح الملف</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════ TAB: PREDICTOR ══════════════════════════════ -->
+<div class="page" id="tab-predictor">
+
+  <div id="predBox" class="pred-box stable">
+    <div class="pred-header">
+      <div>
+        <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-bottom:3px;">PRODROMAL DETECTION — SLIDING WINDOW 21D</div>
+        <div style="font-size:15px;font-weight:700;" id="predTitle">⚪ بيانات غير كافية</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:3px;" id="predDesc">يتطلب 7 سجلات على الأقل</div>
+      </div>
+      <span class="pred-badge" id="predBadge" style="background:var(--surface2);color:var(--muted);">—</span>
+    </div>
+    <div id="predAlert"></div>
+    <div class="signal-grid" id="signalGrid"></div>
+    <div style="margin-top:14px;">
+      <div class="card-label" style="margin-bottom:7px;">Prodromal Signals — 21 يوم</div>
+      <canvas id="predCanvas" height="80" style="background:rgba(0,0,0,.2);border-radius:8px;"></canvas>
+    </div>
+  </div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">📐 خوارزمية التنبؤ</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.9;">
+        <div><strong style="color:var(--accent)">Sleep Drift:</strong> انخفاض ≥ 1.5h عن خط الأساس</div>
+        <div><strong style="color:var(--yellow)">Energy Rise:</strong> ارتفاع ≥ 2.0 نقطة عن المتوسط</div>
+        <div><strong style="color:var(--green)">Mood Volatility:</strong> تباين > 4 خلال 7 أيام</div>
+        <div><strong style="color:var(--red)">Combined Alert:</strong> إشارتان أو أكثر = تحذير نوبة</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 إحصاءات الفترة</div>
+      <div id="predStats" style="font-size:12px;color:var(--muted);line-height:2;">أدخل 7 سجلات على الأقل</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════ TAB: INPUT ══════════════════════════════ -->
+<div class="page" id="tab-input">
+  <div class="card">
+    <div class="section-head">📊 المؤشرات اليومية</div>
+    <div class="g3">
+      <div class="field">
+        <div class="field-label">المزاج (0 حزن — 10 نشوة)</div>
+        <div class="slider-wrap"><input type="range" min="0" max="10" step="0.5" value="5" id="iMood" oninput="sv(this,'dMood')"><span class="sval" id="dMood">5.0</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">الطاقة (0 إنهاك — 10 زائدة)</div>
+        <div class="slider-wrap"><input type="range" min="0" max="10" step="0.5" value="5" id="iEnergy" oninput="sv(this,'dEnergy')"><span class="sval" id="dEnergy">5.0</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">ساعات النوم (0 — 12)</div>
+        <div class="slider-wrap"><input type="range" min="0" max="12" step="0.5" value="7" id="iSleep" oninput="sv(this,'dSleep')"><span class="sval" id="dSleep">7.0</span></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="section-head">⚡ FAST — الأداء الوظيفي</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">مقارنةً باليوم المعتاد، كم نشاطاً وظيفياً أكملتَ اليوم؟</div>
+    <div class="fast-grid">
+      <button class="fast-btn" onclick="selFast(0)">0<br><span style="font-size:9px;">لا شيء</span></button>
+      <button class="fast-btn" onclick="selFast(1)">1<br><span style="font-size:9px;">أقل بكثير</span></button>
+      <button class="fast-btn" onclick="selFast(2)">2<br><span style="font-size:9px;">أقل نسبياً</span></button>
+      <button class="fast-btn" onclick="selFast(3)">3<br><span style="font-size:9px;">طبيعي</span></button>
+    </div>
+    <div class="divider"></div>
+    <div class="section-head">💊 سجل الدواء</div>
+    <div class="g2">
+      <div class="field">
+        <div class="field-label">هل تناولتَ الدواء؟</div>
+        <div class="toggle-group">
+          <button class="toggle-btn" id="medYesBtn" onclick="setMed(true)">✅ نعم</button>
+          <button class="toggle-btn" id="medNoBtn"  onclick="setMed(false)">❌ لا</button>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-label">ملاحظة اليوم (اختياري)</div>
+        <input type="text" id="iNote" placeholder="نوم متقطع، ضغط نفسي...">
+      </div>
+    </div>
+    <button class="submit-btn" onclick="addRecord()">➕ تسجيل بيانات اليوم</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ TAB: SOAP ══════════════════════════════ -->
+<div class="page" id="tab-soap">
+  <div class="soap-section">
+    <div class="soap-hdr">
+      <div style="display:flex;align-items:center;gap:11px;">
+        <span style="font-size:20px;">🤖</span>
+        <div>
+          <div style="font-size:14px;font-weight:600;">تقرير SOAP الأسبوعي</div>
+          <div style="font-size:10px;color:var(--muted);">Subjective · Objective · Assessment · Plan</div>
+        </div>
+        <span class="ai-badge">Claude AI</span>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;">
+        <button class="btn btn-purple" onclick="generateSOAP()" id="soapBtn">✨ توليد SOAP</button>
+        <button class="btn btn-ghost"  onclick="exportSOAP()" id="exportSoapBtn" disabled>⬇️ تصدير</button>
+      </div>
+    </div>
+    <div id="soapContent">
+      <div class="soap-empty">
+        <div style="font-size:32px;margin-bottom:10px;">📋</div>
+        <div>اضغط "توليد SOAP" للحصول على ملخص أسبوعي جاهز للملف الطبي</div>
+        <div style="font-size:11px;color:var(--muted2);margin-top:6px;">يتطلب 7 سجلات · Claude AI</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📖 هيكل تقرير SOAP</div>
+    <div style="font-size:12px;color:var(--muted);line-height:2.1;">
+      <div><strong style="color:var(--accent)">S — Subjective:</strong> ما يُبلَّغ عنه ذاتياً (المزاج، النوم، الشكاوى)</div>
+      <div><strong style="color:var(--green)">O — Objective:</strong> البيانات القابلة للقياس (BSI، Risk Score، اتجاهات)</div>
+      <div><strong style="color:var(--orange)">A — Assessment:</strong> التقييم السريري ودرجة الخطر</div>
+      <div><strong style="color:var(--purple)">P — Plan:</strong> التوصيات والخطة للأسبوع القادم</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════ TAB: EXPORT ══════════════════════════════ -->
+<div class="page" id="tab-export">
+  <div class="card">
+    <div class="card-title">⬇️ تصدير البيانات البحثية</div>
+    <div style="display:flex;flex-direction:column;gap:9px;margin-top:4px;">
+      <div class="export-row">
+        <div class="export-info">📊 CSV — البيانات الخام<small>متوافق مع SPSS · R · Python · Excel</small></div>
+        <button class="btn btn-primary" onclick="exportCSV()">تصدير CSV</button>
+      </div>
+      <div class="export-row">
+        <div class="export-info">📈 CSV — Correlation Matrix<small>Pearson / Spearman جاهز لـ R</small></div>
+        <button class="btn btn-primary" onclick="exportCorrelationCSV()">تصدير Matrix</button>
+      </div>
+      <div class="export-row">
+        <div class="export-info">📄 TXT — تقرير الطبيب<small>ملخص سريري كامل</small></div>
+        <button class="btn btn-ghost" onclick="exportTXT()">تصدير TXT</button>
+      </div>
+      <div class="export-row">
+        <div class="export-info">👤 JSON — ملف المريض<small>نسخة احتياطية كاملة قابلة للاستيراد</small></div>
+        <button class="btn btn-ghost" onclick="exportPatientJSON()">تصدير JSON</button>
+      </div>
+      <div class="export-row">
+        <div class="export-info" style="color:var(--red);">🗑️ مسح جميع البيانات<small style="color:var(--muted);">لا يمكن التراجع</small></div>
+        <button class="btn btn-ghost btn-red-soft" onclick="clearAll()">مسح الكل</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🔬 معاينة CSV</div>
+    <div style="overflow-x:auto;">
+      <pre id="csvPreview" style="font-family:var(--mono);font-size:10px;color:var(--muted);
+        background:var(--surface2);padding:12px;border-radius:8px;line-height:1.7;white-space:pre;">لا توجد بيانات بعد</pre>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📐 وصف المتغيرات</div>
+    <div style="font-size:11px;color:var(--muted);line-height:2;font-family:var(--mono);">
+      <div><span style="color:var(--accent)">date_iso</span> · ISO 8601</div>
+      <div><span style="color:var(--accent)">mood_0_10</span> · مقياس المزاج</div>
+      <div><span style="color:var(--accent)">energy_0_10</span> · مقياس الطاقة</div>
+      <div><span style="color:var(--accent)">sleep_hours</span> · ساعات النوم</div>
+      <div><span style="color:var(--accent)">sleep_debt_h</span> · دين النوم</div>
+      <div><span style="color:var(--accent)">fast_score</span> · FAST (0–3)</div>
+      <div><span style="color:var(--accent)">medication_taken</span> · الالتزام (1/0/NA)</div>
+      <div><span style="color:var(--accent)">risk_score_pct</span> · Risk Score</div>
+      <div><span style="color:var(--accent)">bsi</span> · Stability Index</div>
+      <div><span style="color:var(--accent)">mood_7d_variance</span> · تباين المزاج</div>
+      <div><span style="color:var(--accent)">note</span> · ملاحظة يومية</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- API KEY MODAL -->
+<div class="modal-overlay" id="keyModal" onclick="if(event.target===this)closeKeyModal()">
+  <div class="modal">
+    <div class="modal-icon">🔑</div>
+    <div class="modal-title">Anthropic API Key</div>
+    <div class="modal-sub">مطلوب لتقرير SOAP بالذكاء الاصطناعي<br><strong style="color:var(--accent);">يُحفظ في الذاكرة فقط — لا يُرسَل لأي خادم</strong></div>
+    <div class="modal-input-wrap">
+      <input class="modal-input" type="password" id="keyInput" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false" oninput="updateKeyPreview()">
+      <button class="modal-eye" onclick="document.getElementById('keyInput').type=document.getElementById('keyInput').type==='password'?'text':'password'">👁</button>
+    </div>
+    <div id="keyPreview" style="font-size:11px;min-height:16px;margin-bottom:4px;font-family:var(--mono);"></div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="btn btn-primary" style="flex:1;" onclick="saveKey()">✅ حفظ وتفعيل</button>
+      <button class="btn btn-ghost" onclick="clearKey()">🗑️</button>
+      <button class="btn btn-ghost" onclick="closeKeyModal()">إلغاء</button>
+    </div>
+    <div class="modal-hint">
+      من <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a> ← API Keys<br>
+      المفتاح يبدأ بـ <span style="color:var(--accent);font-family:var(--mono);">sk-ant-</span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// STORAGE KEYS
+// ═══════════════════════════════════════════════════════
+const KEYS = {
+  records : 'bmp_records_v4',
+  profile : 'bmp_profile_v4',
+  meds    : 'bmp_meds_v4',
+  episodes: 'bmp_episodes_v4',
+  comorbid: 'bmp_comorbid_v4',
+  allergy : 'bmp_allergy_v4',
+};
+
+// ═══════════════════════════════════════════════════════
+// STATE — all persisted via localStorage
+// ═══════════════════════════════════════════════════════
+let records   = lsGet(KEYS.records,  []);
+let profile   = lsGet(KEYS.profile,  {});
+let meds      = lsGet(KEYS.meds,     []);
+let episodes  = lsGet(KEYS.episodes, []);
+let comorbid  = lsGet(KEYS.comorbid, []);
+let allergy   = lsGet(KEYS.allergy,  []);
+
+let fastSelected = null;
+let medTakenToday = null;
+let soapCache = null;
+let apiKey = '';
+let deferredInstall = null;
+
+// ═══════════════════════════════════════════════════════
+// LOCALSTORAGE HELPERS
+// ═══════════════════════════════════════════════════════
+function lsGet(key, def){
+  try{ const v=localStorage.getItem(key); return v?JSON.parse(v):def; }
+  catch(e){ return def; }
+}
+function lsSet(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); }
+  catch(e){ toast('⚠️ خطأ في الحفظ: مساحة التخزين ممتلئة','var(--red)'); }
+}
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+function switchTab(name, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(name==='dashboard') setTimeout(drawMainChart,50);
+  if(name==='predictor') setTimeout(()=>{runPredictor();drawPredChart();},50);
+  if(name==='export')    updateCSVPreview();
+  if(name==='patient')   renderProfileView();
+}
+
+function switchProfileTab(name, btn){
+  ['basic','clinical','meds','episodes','social'].forEach(t=>{
+    document.getElementById('pf-'+t).style.display='none';
+    document.getElementById('pf-tab-'+t).classList.remove('active');
+  });
+  document.getElementById('pf-'+name).style.display='block';
+  if(btn) btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+const avg    = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : 0;
+const clamp  = (v,lo,hi) => Math.max(lo,Math.min(hi,v));
+const fmt    = ts => { const d=new Date(ts); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+const fmtAr  = ts => new Date(ts).toLocaleDateString('ar-DZ');
+
+function variance(arr){
+  if(arr.length<2) return 0;
+  const m=avg(arr);
+  return avg(arr.map(x=>(x-m)**2));
+}
+function toast(msg,color='var(--accent)'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.color=color;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+function sv(el,id){ document.getElementById(id).textContent=parseFloat(el.value).toFixed(1); }
+function calcAge(dob){ if(!dob) return null; const d=new Date(dob),n=new Date(); return Math.floor((n-d)/31557600000); }
+
+// ═══════════════════════════════════════════════════════
+// CLINICAL ENGINE
+// ═══════════════════════════════════════════════════════
+function extractFeatures(r){
+  const w=r.slice(0,Math.min(7,r.length));
+  const x=r[0];
+  const mArr=w.map(d=>d.mood);
+  const trend=w.length>1?mArr[0]-mArr[mArr.length-1]:0;
+  return {mood:x.mood,energy:x.energy,sleep:x.sleep,
+    sleepDebt:Math.max(0,7-x.sleep),moodTrend:trend,moodVar:variance(mArr)};
+}
+function predict(f){
+  const z=0.4*f.mood+0.3*f.energy-0.5*f.sleep+0.6*f.sleepDebt+0.4*f.moodTrend+0.2*f.moodVar;
+  return Math.round((1/(1+Math.exp(-z/8)))*100);
+}
+function clinical(r){
+  const x=r[0];
+  let mania=0;
+  if(x.mood>=8)mania+=35; else if(x.mood>=7)mania+=20;
+  if(x.energy>=8)mania+=20; else if(x.energy>=7)mania+=10;
+  if(x.sleep<5)mania+=20; else if(x.sleep<6)mania+=10;
+  let dep=0;
+  if(x.mood<=2)dep+=40; else if(x.mood<=3)dep+=25;
+  if(x.energy<=2)dep+=25; else if(x.energy<=3)dep+=15;
+  if(x.sleep>10)dep+=15; if(x.sleep<4)dep+=15;
+  return {mania:clamp(mania,0,100),dep:clamp(dep,0,100)};
+}
+function bsi(r){
+  if(r.length<3) return null;
+  const v=variance(r.slice(0,Math.min(10,r.length)).map(x=>x.mood));
+  return clamp(Math.round(100-(v/25)*100),0,100);
+}
+function engine(r){
+  if(r.length<3) return null;
+  const f=extractFeatures(r);
+  const ml=predict(f);
+  const c=clinical(r);
+  const score=clamp(Math.round(ml*0.6+Math.max(c.mania,c.dep)*0.4),0,100);
+  const w7=r.slice(0,Math.min(7,r.length));
+  return {score,ml,c,bsi:bsi(r),features:f,
+    moodVar7:variance(w7.map(x=>x.mood)),
+    avgSleep7:avg(w7.map(x=>x.sleep)),
+    avgEnergy7:avg(w7.map(x=>x.energy)),
+    avgMood7:avg(w7.map(x=>x.mood))};
+}
+function riskLevel(score){
+  if(score===null) return {cls:'safe',icon:'⚪',label:'بيانات غير كافية',color:'var(--muted)',desc:'أدخل 3 سجلات على الأقل'};
+  if(score<25)  return {cls:'safe',    icon:'🟢',label:'مستقر',         color:'var(--green)', desc:'لا مؤشرات على نوبة قادمة'};
+  if(score<50)  return {cls:'low',     icon:'🟡',label:'تنبيه خفيف',    color:'var(--yellow)',desc:'مراقبة مستمرة مُوصى بها'};
+  if(score<75)  return {cls:'moderate',icon:'🟠',label:'تنبيه متوسط',   color:'var(--orange)',desc:'استشر طبيبك قريباً'};
+  return             {cls:'high',      icon:'🔴',label:'خطر مرتفع',     color:'var(--red)',   desc:'تواصل مع طبيبك فوراً'};
+}
+
+// ═══════════════════════════════════════════════════════
+// FORM
+// ═══════════════════════════════════════════════════════
+function selFast(v){
+  fastSelected=v;
+  document.querySelectorAll('.fast-btn').forEach((b,i)=>b.classList.toggle('selected',i===v));
+}
+function setMed(v){
+  medTakenToday=v;
+  document.getElementById('medYesBtn').className='toggle-btn'+(v?' yes':'');
+  document.getElementById('medNoBtn').className='toggle-btn'+(v===false?' no':'');
+}
+function addRecord(){
+  const mood=parseFloat(document.getElementById('iMood').value);
+  const energy=parseFloat(document.getElementById('iEnergy').value);
+  const sleep=parseFloat(document.getElementById('iSleep').value);
+  const note=document.getElementById('iNote').value.trim();
+  const today=fmt(Date.now());
+  const rec={date:Date.now(),mood,energy,sleep,fast:fastSelected,medTaken:medTakenToday,note};
+  if(records.length>0 && fmt(records[0].date)===today){
+    records[0]={...records[0],...rec,date:records[0].date};
+    toast('✅ تم تحديث سجل اليوم','var(--green)');
+  } else {
+    records.unshift(rec);
+    toast('✅ تم حفظ السجل','var(--green)');
+  }
+  lsSet(KEYS.records, records);
+  // reset
+  fastSelected=null; medTakenToday=null;
+  document.querySelectorAll('.fast-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('medYesBtn').className='toggle-btn';
+  document.getElementById('medNoBtn').className='toggle-btn';
+  document.getElementById('iNote').value='';
+  refresh();
+}
+
+// ═══════════════════════════════════════════════════════
+// PATIENT PROFILE
+// ═══════════════════════════════════════════════════════
+const profileFields=[
+  'name','id','dob','gender','marital','children','job','edu','phone','address',
+  'bdtype','diagdate','firstepisode','prevdoc','hosp','suicide',
+  'living','empstatus','support','guardian','emergency','substances','hobbies',
+  'clinicalnotes','socialnotes'
+];
+
+function loadProfileForm(){
+  profileFields.forEach(f=>{
+    const el=document.getElementById('pf-'+f);
+    if(el && profile[f]!==undefined) el.value=profile[f];
+  });
+  renderTagList('comorb', comorbid);
+  renderTagList('allergy', allergy);
+  renderMedList();
+  renderEpisodeList();
+}
+
+function saveProfile(){
+  profileFields.forEach(f=>{
+    const el=document.getElementById('pf-'+f);
+    if(el) profile[f]=el.value;
+  });
+  lsSet(KEYS.profile,  profile);
+  lsSet(KEYS.comorbid, comorbid);
+  lsSet(KEYS.allergy,  allergy);
+  renderProfileView();
+  toast('✅ تم حفظ ملف المريض','var(--green)');
+}
+
+function clearProfile(){
+  if(!confirm('هل أنت متأكد من مسح ملف المريض الكامل؟')) return;
+  profile={}; meds=[]; episodes=[]; comorbid=[]; allergy=[];
+  [KEYS.profile,KEYS.meds,KEYS.episodes,KEYS.comorbid,KEYS.allergy].forEach(k=>localStorage.removeItem(k));
+  loadProfileForm();
+  renderProfileView();
+  toast('🗑️ تم مسح الملف','var(--orange)');
+}
+
+function renderProfileView(){
+  const name=profile.name||'';
+  const bdtype=profile.bdtype||'';
+  const age=profile.dob?calcAge(profile.dob):null;
+
+  // Avatar letter
+  document.getElementById('profileAvatar').textContent=name?name[0].toUpperCase():'👤';
+
+  // Name + badge
+  let nameHtml=name?`<span>${name}</span>`:'<span style="color:var(--muted);font-weight:400;font-size:15px;">لم يتم إنشاء ملف بعد</span>';
+  if(bdtype){
+    const cls=bdtype.includes('I ')&&!bdtype.includes('II')?'pb-bd1':bdtype.includes('II')?'pb-bd2':bdtype.includes('Mix')?'pb-bdm':'pb-nos';
+    nameHtml+=` <span class="profile-badge ${cls}">${bdtype}</span>`;
+  }
+  document.getElementById('profileName').innerHTML=nameHtml;
+
+  // Meta chips
+  const meta=[];
+  if(age!==null) meta.push(`<span>🎂 ${age} سنة</span>`);
+  if(profile.gender) meta.push(`<span>${profile.gender==='ذكر'?'👨':'👩'} ${profile.gender}</span>`);
+  if(profile.job) meta.push(`<span>💼 ${profile.job}</span>`);
+  if(profile.marital) meta.push(`<span>💍 ${profile.marital}</span>`);
+  if(profile.phone) meta.push(`<span>📱 ${profile.phone}</span>`);
+  document.getElementById('profileMeta').innerHTML=meta.join('')||'<span style="color:var(--muted);">ابدأ بملء البيانات أدناه</span>';
+
+  // Info grid values
+  const setInfo=(id,val)=>{
+    const el=document.getElementById('pi-'+id);
+    if(!el) return;
+    el.textContent=val||'—';
+    el.className='info-val'+(val?'':' empty');
+  };
+  setInfo('dob', profile.dob||'');
+  setInfo('age', age!==null?age+' سنة':'');
+  setInfo('gender', profile.gender);
+  setInfo('marital', profile.marital);
+  setInfo('job', profile.job);
+  setInfo('edu', profile.edu);
+  setInfo('bdtype', profile.bdtype);
+  setInfo('diagdate', profile.diagdate);
+  setInfo('firstepisode', profile.firstepisode);
+}
+
+// Tags (comorbidities, allergies)
+function renderTagList(type, arr){
+  const el=document.getElementById(type+'-tags');
+  if(!el) return;
+  el.innerHTML=arr.map((t,i)=>`<span class="tag">${t}<button class="tag-rm" onclick="removeTag('${type}',${i})">×</button></span>`).join('');
+}
+function addTag(e, type){
+  if(e.key!=='Enter') return;
+  addTagBtn(type);
+}
+function addTagBtn(type){
+  const inp=document.getElementById(type+'-input');
+  const val=inp.value.trim();
+  if(!val) return;
+  const arr=type==='comorb'?comorbid:allergy;
+  if(!arr.includes(val)) arr.push(val);
+  renderTagList(type, arr);
+  inp.value='';
+}
+function removeTag(type, i){
+  const arr=type==='comorb'?comorbid:allergy;
+  arr.splice(i,1);
+  renderTagList(type, arr);
+}
+
+// Medications
+function addMedication(){
+  const name=document.getElementById('med-name').value.trim();
+  if(!name){toast('❌ أدخل اسم الدواء','var(--red)');return;}
+  const dose=document.getElementById('med-dose').value.trim();
+  const cls=document.getElementById('med-class').value;
+  meds.push({name,dose,class:cls,added:fmt(Date.now())});
+  lsSet(KEYS.meds, meds);
+  document.getElementById('med-name').value='';
+  document.getElementById('med-dose').value='';
+  renderMedList();
+  toast('💊 تم إضافة الدواء','var(--green)');
+}
+function removeMed(i){
+  meds.splice(i,1);
+  lsSet(KEYS.meds, meds);
+  renderMedList();
+}
+function renderMedList(){
+  const el=document.getElementById('medList');
+  if(!el) return;
+  if(!meds.length){el.innerHTML='<div style="font-size:12px;color:var(--muted);padding:10px 0;">لا توجد أدوية مُسجَّلة</div>';return;}
+  const classColors={'مثبّت مزاج':'var(--accent)','مضاد ذهان':'var(--purple)','مضاد اكتئاب':'var(--green)',
+    'مضاد قلق':'var(--yellow)','منوّم':'var(--orange)','أخرى':'var(--muted)'};
+  el.innerHTML=meds.map((m,i)=>`
+    <div class="med-item">
+      <div class="med-info">
+        <div class="med-name">${m.name} <span style="font-size:10px;font-family:var(--mono);color:${classColors[m.class]||'var(--muted)'};margin-right:6px;">[${m.class}]</span></div>
+        <div class="med-dose">${m.dose||'جرعة غير محددة'} · أُضيف ${m.added}</div>
+      </div>
+      <button class="med-del" onclick="removeMed(${i})" title="حذف">🗑️</button>
+    </div>`).join('');
+}
+
+// Episodes
+function addEpisode(){
+  const type=document.getElementById('ep-type').value;
+  const start=document.getElementById('ep-start').value;
+  const end=document.getElementById('ep-end').value;
+  const note=document.getElementById('ep-note').value.trim();
+  if(!start){toast('❌ أدخل تاريخ البداية','var(--red)');return;}
+  episodes.unshift({type,start,end,note,logged:fmt(Date.now())});
+  lsSet(KEYS.episodes, episodes);
+  document.getElementById('ep-start').value='';
+  document.getElementById('ep-end').value='';
+  document.getElementById('ep-note').value='';
+  renderEpisodeList();
+  toast('📅 تم تسجيل النوبة','var(--green)');
+}
+function removeEpisode(i){
+  episodes.splice(i,1);
+  lsSet(KEYS.episodes, episodes);
+  renderEpisodeList();
+}
+function renderEpisodeList(){
+  const el=document.getElementById('episodeList');
+  if(!el) return;
+  if(!episodes.length){el.innerHTML='<div style="font-size:12px;color:var(--muted);padding:10px 0;">لا توجد نوبات مُسجَّلة</div>';return;}
+  const epColors={'هوس / Mania':'var(--red)','هيبومانيا / Hypomania':'var(--orange)',
+    'اكتئاب / Depression':'var(--accent)','مختلط / Mixed':'var(--purple)','تعافٍ / Remission':'var(--green)'};
+  el.innerHTML=episodes.map((ep,i)=>`
+    <div class="ep-item">
+      <div class="ep-info">
+        <div class="ep-type" style="color:${epColors[ep.type]||'var(--text)'};">${ep.type}</div>
+        <div class="ep-dates">${ep.start} ${ep.end?'← '+ep.end:'← جارية'} ${ep.note?'| '+ep.note:''}</div>
+      </div>
+      <button class="ep-del" onclick="removeEpisode(${i})">🗑️</button>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// EPISODE PREDICTOR
+// ═══════════════════════════════════════════════════════
+function runPredictor(){
+  const box=document.getElementById('predBox');
+  const titleEl=document.getElementById('predTitle');
+  const descEl=document.getElementById('predDesc');
+  const badgeEl=document.getElementById('predBadge');
+  const alertEl=document.getElementById('predAlert');
+  const gridEl=document.getElementById('signalGrid');
+  const statsEl=document.getElementById('predStats');
+
+  if(records.length<7){
+    box.className='pred-box stable';
+    titleEl.textContent='⚪ بيانات غير كافية';
+    descEl.textContent=`تحتاج ${7-records.length} سجلات إضافية`;
+    badgeEl.textContent='—'; alertEl.innerHTML=''; gridEl.innerHTML=''; return;
+  }
+  const w=records.slice(0,Math.min(21,records.length));
+  const recent=w.slice(0,7);
+  const baseline=w.slice(7);
+  const recentSleep=avg(recent.map(r=>r.sleep));
+  const baseSleep=baseline.length?avg(baseline.map(r=>r.sleep)):recentSleep;
+  const sleepDrift=baseSleep-recentSleep;
+  const recentEnergy=avg(recent.map(r=>r.energy));
+  const baseEnergy=baseline.length?avg(baseline.map(r=>r.energy)):recentEnergy;
+  const energyRise=recentEnergy-baseEnergy;
+  const moodVar=variance(recent.map(r=>r.mood));
+  const recentMood=avg(recent.map(r=>r.mood));
+  const depressionDrift=baseline.length?avg(baseline.map(r=>r.mood))-recentMood:0;
+
+  let signals=0, hypomaniaSig=false, depressionSig=false;
+  const sleepDriftSig=sleepDrift>=1.5;
+  const energyRiseSig=energyRise>=2.0;
+  const moodVolSig=moodVar>4;
+  const deprSig=depressionDrift>=2.0&&recentMood<5;
+  if(sleepDriftSig)signals++;
+  if(energyRiseSig){signals++;hypomaniaSig=true;}
+  if(moodVolSig)signals++;
+  if(deprSig){signals++;depressionSig=true;}
+  if(sleepDriftSig&&energyRiseSig)hypomaniaSig=true;
+
+  let cls,icon,label,desc,bt,bs;
+  if(signals===0){cls='stable';icon='🟢';label='مستقر';desc='لا إشارات prodromal';bt='STABLE';bs='rgba(0,245,160,.15);color:var(--green)';}
+  else if(signals===1){cls='watch';icon='🟡';label='مراقبة — إشارة خفيفة';desc='إشارة واحدة';bt='WATCH';bs='rgba(255,214,10,.15);color:var(--yellow)';}
+  else if(signals===2){cls='warning';icon=hypomaniaSig?'🟠':'🔵';label=hypomaniaSig?'تحذير — هيبومانيا محتمل':'تحذير — اكتئاب محتمل';desc='إشارتان prodromal';bt='WARNING';bs='rgba(255,149,0,.15);color:var(--orange)';}
+  else{cls='alert';icon=hypomaniaSig?'🔴':'🔵';label=hypomaniaSig?'تنبيه — خطر هيبومانيا':'تنبيه — خطر اكتئاب';desc='إشارات متعددة — تدخّل عاجل';bt='ALERT';bs='rgba(255,59,92,.2);color:var(--red)';}
+
+  box.className=`pred-box ${cls}`;
+  titleEl.textContent=`${icon} ${label}`;
+  descEl.textContent=desc;
+  badgeEl.textContent=bt;
+  badgeEl.style.cssText=`background:${bs};padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;font-family:var(--mono);`;
+  alertEl.innerHTML=signals>=2?`<div class="alert-box ${signals>=3?'danger':'warn'}" style="margin-top:12px;">⚠️ ${hypomaniaSig?`Sleep Drift ${sleepDrift.toFixed(1)}h + Energy +${energyRise.toFixed(1)}`:`Depression Drift −${depressionDrift.toFixed(1)}`}</div>`:'';
+
+  const sigs=[
+    {name:'Sleep Drift',val:sleepDrift.toFixed(2)+'h',active:sleepDriftSig,color:sleepDriftSig?'var(--orange)':'var(--muted)',arrow:sleepDrift>0?'↓':'→',sub:'≥1.5h'},
+    {name:'Energy Rise',val:'+'+energyRise.toFixed(2),active:energyRiseSig,color:energyRiseSig?'var(--yellow)':'var(--muted)',arrow:energyRise>0?'↑':'→',sub:'≥2.0'},
+    {name:'Mood Volatility',val:moodVar.toFixed(2),active:moodVolSig,color:moodVolSig?'var(--red)':'var(--muted)',arrow:'±',sub:'>4.0'},
+  ];
+  gridEl.innerHTML=sigs.map(s=>`<div class="sig-card" style="border-color:${s.active?s.color:'var(--border)'};">
+    <div class="sig-name">${s.name}</div>
+    <div class="sig-val" style="color:${s.color};">${s.arrow}${s.val}</div>
+    <div style="font-size:9px;color:var(--muted2);margin-top:3px;">${s.sub}${s.active?' ● ACTIVE':''}</div>
+  </div>`).join('');
+
+  statsEl.innerHTML=`
+    <div><b style="color:var(--accent)">متوسط النوم (7أ):</b> ${recentSleep.toFixed(1)}h</div>
+    <div><b style="color:var(--accent)">خط الأساس:</b> ${baseSleep.toFixed(1)}h</div>
+    <div><b style="color:var(--green)">متوسط الطاقة:</b> ${recentEnergy.toFixed(1)}/10</div>
+    <div><b style="color:var(--yellow)">تباين المزاج:</b> ${moodVar.toFixed(2)}</div>
+    <div><b style="color:var(--purple)">إشارات نشطة:</b> ${signals}/4</div>
+    <div><b style="color:var(--orange)">النوع:</b> ${hypomaniaSig?'Hypomania':depressionSig?'Depression':'—'}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// REFRESH / RENDER
+// ═══════════════════════════════════════════════════════
+function refresh(){
+  document.getElementById('recCount').textContent=records.length;
+  const r=records.length>=3?engine(records):null;
+  const rl=riskLevel(r?r.score:null);
+  const banner=document.getElementById('riskBanner');
+  banner.className=`risk-banner ${rl.cls}`;
+  document.getElementById('riskIcon').textContent=rl.icon;
+  document.getElementById('riskStatus').textContent=rl.label;
+  document.getElementById('riskStatus').style.color=rl.color;
+  document.getElementById('riskDesc').textContent=rl.desc;
+  const sn=document.getElementById('riskScoreNum');
+  sn.textContent=r?r.score:'—'; sn.style.color=r?rl.color:'var(--muted)';
+
+  if(records.length>0){
+    const x=records[0];
+    setM('m-mood',x.mood.toFixed(1)+'/10','b-mood',x.mood/10*100,'var(--accent)');
+    setM('m-sleep',x.sleep.toFixed(1)+'h','b-sleep',x.sleep/12*100,'var(--yellow)');
+    if(records.length>=2){
+      const tr=x.mood-records[1].mood;
+      document.getElementById('m-mood-trend').textContent=`اتجاه: ${tr>0?'↑':tr<0?'↓':'→'} ${tr>0?'+':''}${tr.toFixed(1)}`;
+    }
+    document.getElementById('m-sleep-debt').textContent=`دين النوم: ${Math.max(0,7-x.sleep).toFixed(1)}h`;
+    if(x.fast!=null){
+      setM('m-fast',x.fast+'/3','b-fast',x.fast/3*100,'var(--purple)');
+      document.getElementById('m-fast-lbl').textContent=['لا شيء','ضعيف','متوسط','طبيعي'][x.fast]||'—';
+    }
+  }
+  if(r){
+    const bc=r.bsi>70?'var(--green)':r.bsi>40?'var(--yellow)':'var(--red)';
+    setM('m-bsi',r.bsi+'/100','b-bsi',r.bsi,bc);
+  }
+  renderMedDots(); renderHistory(); drawMainChart();
+}
+function setM(vid,vt,bid,bp,col){
+  const v=document.getElementById(vid); if(v){v.textContent=vt;v.style.color=col;}
+  const b=document.getElementById(bid); if(b){b.style.width=bp+'%';b.style.background=col;}
+}
+
+function renderMedDots(){
+  const el=document.getElementById('medDots');
+  const last14=records.slice(0,14);
+  if(!last14.length){el.innerHTML='';return;}
+  const withMed=last14.filter(r=>r.medTaken!=null);
+  const taken=withMed.filter(r=>r.medTaken===true).length;
+  const pct=withMed.length?Math.round(taken/withMed.length*100):null;
+  if(pct!==null){
+    document.getElementById('medAdherence').textContent=pct+'%';
+    const c=pct>=80?'var(--green)':pct>=60?'var(--yellow)':'var(--red)';
+    document.getElementById('medAdherence').style.color=c;
+    document.getElementById('medAdherenceSub').textContent=`${taken}/${withMed.length} أيام`;
+  }
+  el.innerHTML='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;">'+
+    last14.map(r=>{
+      const has=r.medTaken!=null;
+      const bg=!has?'rgba(22,45,74,.4)':r.medTaken?'rgba(0,245,160,.15)':'rgba(255,59,92,.12)';
+      const brd=!has?'rgba(30,58,95,.5)':r.medTaken?'rgba(0,245,160,.4)':'rgba(255,59,92,.4)';
+      const col=!has?'#3a6a96':r.medTaken?'#00f5a0':'#ff3b5c';
+      return `<div title="${fmt(r.date)}" style="width:26px;height:26px;border-radius:5px;background:${bg};border:1px solid ${brd};display:flex;align-items:center;justify-content:center;font-size:12px;color:${col};font-family:var(--mono);">${!has?'·':r.medTaken?'✓':'✗'}</div>`;
+    }).join('')+'</div>';
+}
+
+function renderHistory(){
+  const el=document.getElementById('histList');
+  if(!records.length){el.innerHTML='<div class="empty"><div class="empty-icon">📂</div><p>لا توجد سجلات</p></div>';return;}
+  el.innerHTML=records.slice(0,14).map(r=>`
+    <div class="hist-row">
+      <span class="hist-date">${fmt(r.date)}</span>
+      <div class="chips">
+        <span class="chip">😊${r.mood.toFixed(1)}</span>
+        <span class="chip">⚡${r.energy.toFixed(1)}</span>
+        <span class="chip">😴${r.sleep.toFixed(1)}h</span>
+        ${r.fast!=null?`<span class="chip">⚡${r.fast}</span>`:''}
+        ${r.medTaken===true?'<span class="chip yes">💊✓</span>':r.medTaken===false?'<span class="chip no">💊✗</span>':''}
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════════════════════
+function drawMainChart(){
+  const canvas=document.getElementById('mainChart');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.getBoundingClientRect().width||700;
+  const H=200;
+  canvas.width=W*dpr; canvas.height=H*dpr; ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  if(records.length<2){
+    ctx.fillStyle='rgba(91,141,184,.35)';ctx.font='12px IBM Plex Mono,monospace';
+    ctx.textAlign='center';ctx.fillText('أدخل بيانات لعرض الرسم',W/2,H/2);return;
+  }
+  const data=records.slice(0,21).reverse();
+  const n=data.length;
+  const pX=22,pY=12,cW=W-pX*2,cH=H-pY*2-14;
+  [0,2,4,6,8,10].forEach(v=>{
+    const y=pY+cH-(v/10)*cH;
+    ctx.strokeStyle='rgba(30,58,95,.4)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(pX,y);ctx.lineTo(W-pX,y);ctx.stroke();
+    ctx.fillStyle='rgba(91,141,184,.4)';ctx.font='8px IBM Plex Mono';ctx.textAlign='right';ctx.fillText(v,pX-2,y+3);
+  });
+  function line(key,col,max=10){
+    if(n<2)return;
+    ctx.strokeStyle=col;ctx.lineWidth=2;ctx.lineJoin='round';
+    ctx.beginPath();
+    data.forEach((d,i)=>{const x=pX+(i/(n-1))*cW;const y=pY+cH-(d[key]/max)*cH;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+    ctx.stroke();
+    ctx.fillStyle=col;
+    data.forEach((d,i)=>{const x=pX+(i/(n-1))*cW;const y=pY+cH-(d[key]/max)*cH;ctx.beginPath();ctx.arc(x,y,2,0,Math.PI*2);ctx.fill();});
+  }
+  if(n>1){
+    const g=ctx.createLinearGradient(0,pY,0,pY+cH);
+    g.addColorStop(0,'rgba(0,180,216,.1)');g.addColorStop(1,'rgba(0,180,216,0)');
+    ctx.fillStyle=g;ctx.beginPath();
+    data.forEach((d,i)=>{const x=pX+(i/(n-1))*cW;const y=pY+cH-(d.mood/10)*cH;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+    ctx.lineTo(pX+cW,pY+cH);ctx.lineTo(pX,pY+cH);ctx.closePath();ctx.fill();
+  }
+  line('energy','rgba(0,245,160,.75)');
+  line('sleep','rgba(255,214,10,.75)',12);
+  const hasFast=data.some(d=>d.fast!=null);
+  if(hasFast&&n>1){
+    ctx.strokeStyle='rgba(168,85,247,.65)';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
+    ctx.beginPath();let s=false;
+    data.forEach((d,i)=>{if(d.fast==null)return;const x=pX+(i/(n-1))*cW;const y=pY+cH-(d.fast/3*10/10)*cH;if(!s){ctx.moveTo(x,y);s=true;}else ctx.lineTo(x,y);});
+    ctx.stroke();ctx.setLineDash([]);
+  }
+  line('mood','rgba(0,180,216,1)');
+  ctx.fillStyle='rgba(91,141,184,.5)';ctx.font='8px IBM Plex Mono';
+  ctx.textAlign='left';ctx.fillText(fmt(data[0].date),pX,H-1);
+  ctx.textAlign='right';ctx.fillText(fmt(data[data.length-1].date),W-pX,H-1);
+}
+
+function drawPredChart(){
+  const canvas=document.getElementById('predCanvas');
+  const ctx=canvas.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.getBoundingClientRect().width||600;
+  const H=80;
+  canvas.width=W*dpr;canvas.height=H*dpr;ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  if(records.length<3){ctx.fillStyle='rgba(91,141,184,.3)';ctx.font='10px IBM Plex Mono';ctx.textAlign='center';ctx.fillText('بيانات غير كافية',W/2,H/2);return;}
+  const data=records.slice(0,21).reverse();
+  const n=data.length;
+  const pX=6,pY=6,cW=W-pX*2,cH=H-pY*2;
+  const sl=avg(data.map(d=>d.sleep));const en=avg(data.map(d=>d.energy));
+  ctx.strokeStyle='rgba(255,214,10,.2)';ctx.lineWidth=1;ctx.setLineDash([3,4]);
+  const sy=pY+cH-(sl/12)*cH;ctx.beginPath();ctx.moveTo(pX,sy);ctx.lineTo(W-pX,sy);ctx.stroke();
+  const ey=pY+cH-(en/10)*cH;ctx.beginPath();ctx.moveTo(pX,ey);ctx.lineTo(W-pX,ey);ctx.stroke();
+  ctx.setLineDash([]);
+  function mini(key,col,max=10){if(n<2)return;ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.beginPath();data.forEach((d,i)=>{const x=pX+(i/(n-1))*cW;const y=pY+cH-(d[key]/max)*cH;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();}
+  mini('energy','rgba(0,245,160,.65)');mini('sleep','rgba(255,214,10,.65)',12);mini('mood','rgba(0,180,216,.85)');
+}
+
+// ═══════════════════════════════════════════════════════
+// API KEY
+// ═══════════════════════════════════════════════════════
+function openKeyModal(){
+  document.getElementById('keyInput').value=apiKey?'••••••••••••••••':'';
+  document.getElementById('keyPreview').textContent='';
+  document.getElementById('keyModal').classList.add('show');
+  if(!apiKey) setTimeout(()=>document.getElementById('keyInput').focus(),200);
+}
+function closeKeyModal(){document.getElementById('keyModal').classList.remove('show');}
+function updateKeyPreview(){
+  const v=document.getElementById('keyInput').value.trim();
+  const p=document.getElementById('keyPreview');
+  if(v.startsWith('sk-ant-')&&v.length>20){p.style.color='var(--green)';p.textContent='✓ '+v.slice(0,10)+'...'+v.slice(-4);}
+  else if(v.length>3){p.style.color='var(--orange)';p.textContent='⚠ يجب أن يبدأ بـ sk-ant-';}
+  else p.textContent='';
+}
+function saveKey(){
+  const v=document.getElementById('keyInput').value.trim();
+  if(!v||v.includes('•')){closeKeyModal();return;}
+  if(!v.startsWith('sk-ant-')){toast('❌ صيغة غير صحيحة','var(--red)');return;}
+  apiKey=v; updateKeyBtn(); closeKeyModal(); toast('✅ API Key مُفعَّل','var(--green)');
+}
+function clearKey(){apiKey='';document.getElementById('keyInput').value='';updateKeyBtn();closeKeyModal();toast('🗑️ تم مسح المفتاح','var(--orange)');}
+function updateKeyBtn(){
+  const btn=document.getElementById('keyBtn'),lbl=document.getElementById('keyBtnLbl');
+  btn.className=apiKey?'key-btn has-key':'key-btn';
+  lbl.textContent=apiKey?'Key ✓':'API Key';
+}
+async function callClaude(prompt){
+  if(!apiKey){openKeyModal();throw new Error('API Key غير مُدخَل');}
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':apiKey,
+      'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+  });
+  if(!res.ok){
+    const err=await res.json().catch(()=>({}));
+    if(res.status===401){apiKey='';updateKeyBtn();openKeyModal();throw new Error('مفتاح غير صالح');}
+    throw new Error(err?.error?.message||`HTTP ${res.status}`);
+  }
+  const data=await res.json();
+  return data.content?.map(c=>c.text||'').join('')||'';
+}
+
+// ═══════════════════════════════════════════════════════
+// SOAP
+// ═══════════════════════════════════════════════════════
+async function generateSOAP(){
+  if(records.length<7){toast('❌ يتطلب 7 سجلات','var(--red)');return;}
+  const btn=document.getElementById('soapBtn');
+  const content=document.getElementById('soapContent');
+  btn.disabled=true;
+  content.innerHTML=`<div class="loading-wrap"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><span>جارٍ توليد تقرير SOAP...</span></div>`;
+  const r=engine(records);
+  const w7=records.slice(0,7);
+  const w14=records.slice(0,14);
+  const medW=w14.filter(x=>x.medTaken!=null);
+  const medPct=medW.length?Math.round(medW.filter(x=>x.medTaken).length/medW.length*100):null;
+  const fastVals=w7.filter(x=>x.fast!=null).map(x=>x.fast);
+  const avgFast=fastVals.length?avg(fastVals):null;
+  const notes=w7.filter(x=>x.note).map(x=>`- ${fmt(x.date)}: ${x.note}`).join('\n');
+  const patInfo=profile.name?`المريض: ${profile.name}${profile.dob?', '+calcAge(profile.dob)+' سنة':''}, ${profile.bdtype||'BD'}`:'';
+  const curMeds=meds.length?`الأدوية: ${meds.map(m=>m.name+(m.dose?' '+m.dose:'')).join(', ')}`:'';
+  const prompt=`أنت طبيب نفسي متخصص في الاضطراب ثنائي القطب. اكتب تقرير SOAP أسبوعياً بالعربية.
+${patInfo}
+${curMeds}
+بيانات آخر 7 أيام:
+${w7.map(d=>`${fmt(d.date)} mood:${d.mood.toFixed(1)} energy:${d.energy.toFixed(1)} sleep:${d.sleep.toFixed(1)}h${d.fast!=null?' FAST:'+d.fast:''}`).join('\n')}
+Risk Score: ${r.score}% | Hypomania: ${r.c.mania}% | Depression: ${r.c.dep}%
+BSI: ${r.bsi}/100 | مزاج متوسط: ${r.avgMood7.toFixed(1)} | نوم متوسط: ${r.avgSleep7.toFixed(1)}h
+${avgFast!=null?'FAST متوسط: '+avgFast.toFixed(1)+'/3':''}
+${medPct!=null?'الالتزام الدوائي: '+medPct+'%':''}
+${notes?'ملاحظات:\n'+notes:''}
+اكتب بالصيغة التالية (لا markdown):
+S — Subjective:
+[2-3 جمل ذاتية]
+O — Objective:
+[2-3 جمل موضوعية بالأرقام]
+A — Assessment:
+[2-3 جمل تقييم سريري]
+P — Plan:
+[3-4 توصيات عملية]`;
+  try{
+    const text=await callClaude(prompt);
+    soapCache=text;renderSOAP(text,r);
+    document.getElementById('exportSoapBtn').disabled=false;
+  }catch(e){
+    content.innerHTML=`<div class="soap-empty"><div style="color:var(--red)">⚠️ ${e.message}</div><div style="font-size:11px;color:var(--muted);margin-top:6px;">تأكد من API Key</div></div>`;
+  }
+  btn.disabled=false;
+}
+function renderSOAP(text,r){
+  const sM=text.match(/S\s*[—\-–:]\s*Subjective[:\s]*([\s\S]*?)(?=O\s*[—\-–]|$)/i);
+  const oM=text.match(/O\s*[—\-–:]\s*Objective[:\s]*([\s\S]*?)(?=A\s*[—\-–]|$)/i);
+  const aM=text.match(/A\s*[—\-–:]\s*Assessment[:\s]*([\s\S]*?)(?=P\s*[—\-–]|$)/i);
+  const pM=text.match(/P\s*[—\-–:]\s*Plan[:\s]*([\s\S]*?)$/i);
+  const S=sM?sM[1].trim():'',O=oM?oM[1].trim():'',A=aM?aM[1].trim():'',P=pM?pM[1].trim():'';
+  if(!S&&!O&&!A&&!P){document.getElementById('soapContent').innerHTML=`<div class="soap-block"><div class="soap-text">${text}</div></div>`;return;}
+  document.getElementById('soapContent').innerHTML=`
+    <div style="padding:12px 18px;background:rgba(0,180,216,.04);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10px;color:var(--muted);">
+      <span>${profile.name||'المريض'} · ${fmt(Date.now())}</span>
+      <span>Risk ${r.score}% | BSI ${r.bsi}/100</span>
+    </div>
+    ${S?`<div class="soap-block soap-S"><div class="soap-lbl">S — Subjective</div><div class="soap-text">${S}</div></div>`:''}
+    ${O?`<div class="soap-block soap-O"><div class="soap-lbl">O — Objective</div><div class="soap-text">${O}</div></div>`:''}
+    ${A?`<div class="soap-block soap-A"><div class="soap-lbl">A — Assessment</div><div class="soap-text">${A}</div></div>`:''}
+    ${P?`<div class="soap-block soap-P"><div class="soap-lbl">P — Plan</div><div class="soap-text">${P}</div></div>`:''}`;
+}
+function exportSOAP(){
+  if(!soapCache)return;
+  const blob=new Blob([`SOAP — ${profile.name||'المريض'}\n${fmt(Date.now())}\n\n${soapCache}`],{type:'text/plain;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`SOAP_${fmt(Date.now())}.txt`;a.click();
+  toast('📄 تم تصدير SOAP','var(--green)');
+}
+
+// ═══════════════════════════════════════════════════════
+// CSV / EXPORT
+// ═══════════════════════════════════════════════════════
+const CSV_HDR='date_iso,timestamp_ms,mood_0_10,energy_0_10,sleep_hours,sleep_debt_h,fast_score,medication_taken,risk_score_pct,bsi,hypomania_score,depression_score,mood_7d_variance,note';
+function buildCSVRows(){
+  return records.map((d,i)=>{
+    const r2=records.slice(i);
+    const w7=r2.slice(0,Math.min(7,r2.length));
+    const mv=variance(w7.map(x=>x.mood));
+    let rs='NA',bv='NA',hy='NA',dp='NA';
+    if(r2.length>=3){const e=engine(r2);if(e){rs=e.score;bv=e.bsi;hy=e.c.mania;dp=e.c.dep;}}
+    return [fmt(d.date),d.date,d.mood.toFixed(2),d.energy.toFixed(2),d.sleep.toFixed(2),
+      Math.max(0,7-d.sleep).toFixed(2),d.fast!=null?d.fast:'NA',
+      d.medTaken===true?1:d.medTaken===false?0:'NA',rs,bv,hy,dp,mv.toFixed(3),
+      d.note?`"${d.note.replace(/"/g,'""')}"`:''].join(',');
+  });
+}
+function exportCSV(){
+  if(!records.length){toast('❌ لا توجد بيانات','var(--red)');return;}
+  dl([CSV_HDR,...buildCSVRows()].join('\n'),`data_${fmt(Date.now())}.csv`,'text/csv;charset=utf-8');
+  toast(`✅ تم تصدير ${records.length} سجل`,'var(--green)');
+}
+function exportCorrelationCSV(){
+  if(records.length<5){toast('❌ يتطلب 5 سجلات','var(--red)');return;}
+  const keys=['mood_0_10','energy_0_10','sleep_hours','sleep_debt_h'];
+  const vals={mood_0_10:records.map(r=>r.mood),energy_0_10:records.map(r=>r.energy),
+    sleep_hours:records.map(r=>r.sleep),sleep_debt_h:records.map(r=>Math.max(0,7-r.sleep))};
+  let out='variable,'+keys.join(',')+'\n';
+  keys.forEach(k1=>{
+    const row=[k1];
+    keys.forEach(k2=>{
+      const a1=vals[k1],a2=vals[k2],m1=avg(a1),m2=avg(a2);
+      const num=avg(a1.map((v,i)=>(v-m1)*(a2[i]-m2)));
+      const den=Math.sqrt(avg(a1.map(v=>(v-m1)**2))*avg(a2.map(v=>(v-m2)**2)));
+      row.push(den?(num/den).toFixed(4):'1.0000');
+    });
+    out+=row.join(',')+'\n';
+  });
+  dl(out,`corr_matrix_${fmt(Date.now())}.csv`,'text/csv');
+  toast('📊 تم تصدير Correlation Matrix','var(--green)');
+}
+function exportTXT(){
+  if(records.length<3){toast('❌ بيانات غير كافية','var(--red)');return;}
+  const r=engine(records),rl=riskLevel(r.score);
+  const medW=records.filter(x=>x.medTaken!=null);
+  const medPct=medW.length?Math.round(medW.filter(x=>x.medTaken).length/medW.length*100):null;
+  const lines=['════════════════════════════════════════',
+    '   Bipolar Monitor Pro v4 — تقرير سريري',
+    '════════════════════════════════════════',
+    profile.name?`المريض: ${profile.name}  |  ${profile.bdtype||'BD'}`:'',
+    `التاريخ: ${fmt(Date.now())}  |  سجلات: ${records.length}`,
+    '','── مؤشرات ──────────────────────────────',
+    `Risk Score: ${r.score}%  |  Hypomania: ${r.c.mania}%  |  Depression: ${r.c.dep}%`,
+    `BSI: ${r.bsi}/100  |  الحالة: ${rl.label}`,
+    medPct!=null?`الالتزام الدوائي: ${medPct}%`:'',
+    meds.length?`الأدوية: ${meds.map(m=>m.name).join(', ')}`:'',
+    '','── آخر 14 يوم ──────────────────────────',
+    'التاريخ      مزاج  طاقة  نوم  FAST دواء',
+    ...records.slice(0,14).map(d=>`${fmt(d.date)} ${d.mood.toFixed(1)}  ${d.energy.toFixed(1)}  ${d.sleep.toFixed(1)}h  ${d.fast!=null?d.fast:'—'}   ${d.medTaken===true?'✓':d.medTaken===false?'✗':'—'}${d.note?' | '+d.note:''}`),
+    '','════════════════════════════════════════',
+    '* هذا التقرير استرشادي — راجع الطبيب المعالج'
+  ].filter(l=>l!==undefined).join('\n');
+  dl(lines,`report_${fmt(Date.now())}.txt`,'text/plain;charset=utf-8');
+  toast('📄 تم تصدير التقرير','var(--green)');
+}
+function exportPatientJSON(){
+  const data={profile,meds,episodes,comorbid,allergy,records,exported:new Date().toISOString()};
+  dl(JSON.stringify(data,null,2),`patient_${profile.name||'unknown'}_${fmt(Date.now())}.json`,'application/json');
+  toast('📦 تم تصدير JSON الكامل','var(--green)');
+}
+function updateCSVPreview(){
+  const el=document.getElementById('csvPreview');
+  if(!records.length){el.textContent='لا توجد بيانات بعد';return;}
+  const rows=buildCSVRows();
+  el.textContent=CSV_HDR+'\n'+rows.slice(0,3).join('\n')+(records.length>3?`\n... (${records.length} سجلاً)`:'');
+}
+function dl(content,filename,type){
+  const blob=new Blob([content],{type});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();
+}
+
+function clearAll(){
+  if(!confirm('مسح جميع السجلات اليومية؟\n(لن يُمسح ملف المريض)'))return;
+  records=[];lsSet(KEYS.records,records);
+  soapCache=null;document.getElementById('exportSoapBtn').disabled=true;
+  document.getElementById('soapContent').innerHTML='<div class="soap-empty"><div style="font-size:32px;margin-bottom:10px;">📋</div><div>اضغط "توليد SOAP" للبدء</div></div>';
+  refresh();toast('🗑️ تم مسح السجلات','var(--orange)');
+}
+
+// ═══════════════════════════════════════════════════════
+// DEMO DATA
+// ═══════════════════════════════════════════════════════
+function loadDemo(){
+  const p=[
+    {mood:8.5,energy:9,sleep:4,fast:1,med:true,note:'أفكار متسارعة'},
+    {mood:8,energy:8.5,sleep:4.5,fast:1,med:true,note:''},
+    {mood:7.5,energy:8,sleep:5,fast:2,med:false,note:'نسيت الدواء'},
+    {mood:7,energy:7.5,sleep:5.5,fast:2,med:true,note:''},
+    {mood:6.5,energy:7,sleep:6,fast:2,med:true,note:''},
+    {mood:6,energy:6.5,sleep:6.5,fast:2,med:true,note:''},
+    {mood:5.5,energy:6,sleep:7,fast:3,med:true,note:''},
+    {mood:5,energy:5,sleep:7.5,fast:3,med:true,note:''},
+    {mood:4.5,energy:4.5,sleep:8,fast:2,med:true,note:'تعب'},
+    {mood:4,energy:4,sleep:8,fast:2,med:false,note:''},
+    {mood:3.5,energy:3.5,sleep:8.5,fast:1,med:true,note:''},
+    {mood:4,energy:4,sleep:7.5,fast:2,med:true,note:''},
+    {mood:5,energy:5.5,sleep:7,fast:2,med:true,note:''},
+    {mood:6,energy:6,sleep:6.5,fast:2,med:true,note:'تحسن'},
+    {mood:6.5,energy:6.5,sleep:6.5,fast:3,med:true,note:''},
+    {mood:7,energy:7,sleep:6,fast:2,med:true,note:''},
+    {mood:7.5,energy:7.5,sleep:5.5,fast:2,med:true,note:''},
+    {mood:8,energy:8,sleep:5,fast:1,med:true,note:''},
+    {mood:5,energy:5,sleep:7,fast:3,med:true,note:''},
+    {mood:5.5,energy:5.5,sleep:7,fast:3,med:true,note:''},
+    {mood:5,energy:5,sleep:7.5,fast:3,med:true,note:'خط الأساس'},
+  ];
+  records=p.map((x,i)=>({date:Date.now()-i*86400000,mood:x.mood,energy:x.energy,sleep:x.sleep,fast:x.fast,medTaken:x.med,note:x.note}));
+  lsSet(KEYS.records,records);
+  refresh();
+  toast('📊 تم تحميل 21 يوم تجريبية','var(--accent)');
+}
+
+// ═══════════════════════════════════════════════════════
+// PWA
+// ═══════════════════════════════════════════════════════
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredInstall=e;
+  document.getElementById('installBanner').classList.remove('hidden');
+});
+function installApp(){
+  if(!deferredInstall)return;
+  deferredInstall.prompt();
+  deferredInstall.userChoice.then(()=>{deferredInstall=null;dismissInstall();});
+}
+function dismissInstall(){document.getElementById('installBanner').classList.add('hidden');}
+window.addEventListener('appinstalled',()=>dismissInstall());
+
+if('serviceWorker' in navigator){
+  const swCode=`
+    const CACHE='bmp-v4';
+    const SHELL=['/'];
+    self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL))));
+    self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).catch(()=>caches.match('/')))));
+  `;
+  const blob=new Blob([swCode],{type:'application/javascript'});
+  const url=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url).catch(()=>{});
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+window.addEventListener('resize',()=>{
+  drawMainChart();
+  if(document.getElementById('tab-predictor').classList.contains('active'))drawPredChart();
+});
+loadProfileForm();
+refresh();
+</script>
+</body>
+</html>
