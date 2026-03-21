@@ -1,1 +1,240 @@
+?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#060d1a"
+    android:fillViewport="true">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🧠 BD² Monitor"
+            android:textColor="#00b4d8"
+            android:textSize="22sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/txtDate"
+           android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#5b8db8"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/txtSteps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="👟 جارٍ تحميل الخطوات..."
+            android:textColor="#5b8db8"
+            android:textSize="13sp"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Card المزاج والطاقة والنوم -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="18dp"
+            android:layout_marginBottom="16dp">
+          !-- Mood -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="المزاج (0 حزن — 10 نشوة)"
+                android:textColor="#5b8db8"
+                android:textSize="12sp"
+                android:layout_marginBottom="4dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderMood"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:valueFrom="0"
+                    app:valueTo="10"
+                    app:stepSize="1"
+                    app:value="5"
+                    app:thumbColor="#00b4d8"
+                    app:trackColorActive="#00b4d8"
+                    app:trackColorInactive="#1e3a5f"
+                    app:labelBehavior="gone"/>
+
+                <TextView
+                    android:id="@+id/txtMoodVal"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    android:text="5"
+                    android:textColor="#00b4d8"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textAlignment="center"/>
+            </LinearLayout>
+
+            <!-- Energy -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="الطاقة (0 إنهاك — 10 زائدة)"
+                android:textColor="#5b8db8"
+                android:textSize="12sp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="4dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderEnergy"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:valueFrom="0"
+                    app:valueTo="10"
+                    app:stepSize="1"
+                    app:value="5"
+                    app:thumbColor="#00f5a0"
+                    app:trackColorActive="#00f5a0"
+                    app:trackColorInactive="#1e3a5f"
+                    app:labelBehavior="gone"/>
+
+                <TextView
+                    android:id="@+id/txtEnergyVal"
+                    android:layout_width="36dp"
+                    android:layout_height="wrap_content"
+                    android:text="5"
+                    android:textColor="#00f5a0"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textAlignment="center"/>
+            </LinearLayout>
+
+            <!-- Sleep -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ساعات النوم (0 — 12)"
+                android:textColor="#5b8db8"
+                android:textSize="12sp"
+                android:layout_marginTop="14dp"
+                android:layout_marginBottom="4dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/sliderSleep"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:valueFrom="0"
+                    app:valueTo="12"
+                    app:stepSize="0.5"
+                    app:value="7"
+                    app:thumbColor="#ffd60a"
+                    app:trackColorActive="#ffd60a"
+                    app:trackColorInactive="#1e3a5f"
+                    app:labelBehavior="gone"/>
+
+                <TextView
+                    android:id="@+id/txtSleepVal"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:text="7.0"
+                    android:textColor="#ffd60a"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textAlignment="center"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Card الدواء -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="18dp"
+            android:layout_marginBottom="16dp">
+
+            <CheckBox
+                android:id="@+id/checkMedication"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="💊  تناولت الدواء اليوم"
+                android:textColor="#e2f0ff"
+                android:textSize="15sp"
+                android:buttonTint="#00f5a0"/>
+
+        </LinearLayout>
+
+        <!-- Card الملاحظة -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="18dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ملاحظة اليوم (اختياري)"
+                android:textColor="#5b8db8"
+                android:textSize="12sp"
+                android:layout_marginBottom="8dp"/>
+
+            <EditText
+                android:id="@+id/editNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="نوم متقطع، ضغط نفسي، حدث معين..."
+                android:textColor="#e2f0ff"
+                android:textColorHint="#3a6a96"
+                android:background="@drawable/bg_input"
+                android:padding="12dp"
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:gravity="top|end"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+        <!-- زر الحفظ -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="💾  حفظ بيانات اليوم"
+            app:backgroundTint="#0077b6"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            app:cornerRadius="12dp"/>
+
+    </LinearLayout>
+</ScrollView>
