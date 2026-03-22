@@ -14,3 +14,4 @@ data class PatientProfile(
     val doctorName: String = "",
     val emergencyContact: String = "",
     val notes: String = ""
+)
