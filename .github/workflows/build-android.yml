@@ -3,32 +3,41 @@ name: Build Android APK
 on:
   push:
     paths:
-      - 'android/**'
-  workflow_dispatch:
+      - 'android/**'          # يتم التشغيل عند تعديل أي ملف داخل مجلد android
+  workflow_dispatch:          # يسمح بالتشغيل اليدوي من واجهة GitHub
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest    # نستخدم بيئة Linux
+
     steps:
-      - name: Checkout
+      - name: Checkout code   # جلب الكود من المستودع
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set up JDK 17   # إعداد Java 17 (مطلوب لأندرويد)
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle 8.6
-        uses: gradle/actions/setup-gradle@v4
+      - name: Cache Gradle    # تخزين مؤقت للاعتماديات لتسريع البناء
+        uses: actions/cache@v3
         with:
-          gradle-version: '8.6'
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
-      - name: Build Debug APK
-        working-directory: android
-        run: gradle assembleDebug
+      - name: Make gradlew executable   # جعل ملف gradlew قابل للتنفيذ في Linux
+        run: chmod +x android/gradlew
 
-      - name: Upload APK
+      - name: Build Debug APK          # بناء APK بنمط التصحيح
+        working-directory: android      # ننتقل إلى مجلد android
+        run: ./gradlew assembleDebug   # استخدام الـ Wrapper
+
+      - name: Upload APK               # رفع الملف الناتج
         uses: actions/upload-artifact@v4
         with:
           name: BD2-Monitor-APK
