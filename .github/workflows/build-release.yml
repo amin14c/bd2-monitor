@@ -20,7 +20,8 @@ jobs:
           distribution: 'temurin'
 
       - name: Generate Keystore
-        run: |
+        run: 
+        mkdir -p app|
           keytool -genkey -v \
             -keystore app/mediassistant.jks \
             -alias mediassistant \
