@@ -9,6 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: android
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,8 +24,8 @@ jobs:
           distribution: 'temurin'
 
       - name: Generate Keystore
-        run: 
-        mkdir -p app|
+        run: |
+          mkdir -p app
           keytool -genkey -v \
             -keystore app/mediassistant.jks \
             -alias mediassistant \
@@ -45,4 +49,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: MediAssistant-Release
-          path: app/build/outputs/apk/release/*.apk
+          path: android/app/build/outputs/apk/release/*.apk
