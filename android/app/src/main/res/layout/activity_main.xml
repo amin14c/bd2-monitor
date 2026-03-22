@@ -1,14 +1,15 @@
- 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#060d1a"
     android:fillViewport="true">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -16,6 +17,15 @@
             android:textColor="#00b4d8"
             android:textSize="22sp"
             android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/txtPatientName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#00f5a0"
+            android:textSize="14sp"
+            android:layout_marginBottom="4dp"/>
+
         <TextView
             android:id="@+id/txtDate"
             android:layout_width="match_parent"
@@ -23,14 +33,17 @@
             android:textColor="#5b8db8"
             android:textSize="12sp"
             android:layout_marginBottom="8dp"/>
+
         <TextView
             android:id="@+id/txtSteps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="جارٍ تحميل الخطوات..."
+            android:text="جارٍ تحميل الخطوات... / Chargement des pas..."
             android:textColor="#5b8db8"
             android:textSize="13sp"
             android:layout_marginBottom="20dp"/>
+
+        <!-- المزاج / Humeur -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,18 +51,20 @@
             android:background="@drawable/bg_card"
             android:padding="18dp"
             android:layout_marginBottom="16dp">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="المزاج (0-10)"
-                android:textColor="#5b8db8"
-                android:textSize="12sp"/>
+                android:text="😊 المزاج / Humeur"
+                android:textColor="#e2f0ff"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="4dp">
+                android:orientation="horizontal">
+
                 <SeekBar
                     android:id="@+id/sliderMood"
                     android:layout_width="0dp"
@@ -57,9 +72,10 @@
                     android:layout_weight="1"
                     android:max="10"
                     android:progress="5"/>
+
                 <TextView
                     android:id="@+id/txtMoodVal"
-                    android:layout_width="36dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="5"
                     android:textColor="#00b4d8"
@@ -67,19 +83,30 @@
                     android:textStyle="bold"
                     android:textAlignment="center"/>
             </LinearLayout>
+        </LinearLayout>
+
+        <!-- الطاقة / Énergie -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="18dp"
+            android:layout_marginBottom="16dp">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="الطاقة (0-10)"
-                android:textColor="#5b8db8"
-                android:textSize="12sp"
-                android:layout_marginTop="14dp"/>
+                android:text="⚡ الطاقة / Énergie"
+                android:textColor="#e2f0ff"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="4dp">
+                android:orientation="horizontal">
+
                 <SeekBar
                     android:id="@+id/sliderEnergy"
                     android:layout_width="0dp"
@@ -87,29 +114,41 @@
                     android:layout_weight="1"
                     android:max="10"
                     android:progress="5"/>
+
                 <TextView
                     android:id="@+id/txtEnergyVal"
-                    android:layout_width="36dp"
+                    android:layout_width="40dp"
                     android:layout_height="wrap_content"
                     android:text="5"
-                    android:textColor="#00f5a0"
+                    android:textColor="#ffd60a"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textAlignment="center"/>
             </LinearLayout>
+        </LinearLayout>
+
+        <!-- النوم / Sommeil -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="18dp"
+            android:layout_marginBottom="16dp">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ساعات النوم (0-12)"
-                android:textColor="#5b8db8"
-                android:textSize="12sp"
-                android:layout_marginTop="14dp"/>
+                android:text="🌙 ساعات النوم / Heures de sommeil"
+                android:textColor="#e2f0ff"
+                android:textSize="14sp"
+                android:layout_marginBottom="8dp"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginTop="4dp">
+                android:orientation="horizontal">
+
                 <SeekBar
                     android:id="@+id/sliderSleep"
                     android:layout_width="0dp"
@@ -117,6 +156,7 @@
                     android:layout_weight="1"
                     android:max="24"
                     android:progress="14"/>
+
                 <TextView
                     android:id="@+id/txtSleepVal"
                     android:layout_width="40dp"
@@ -128,6 +168,8 @@
                     android:textAlignment="center"/>
             </LinearLayout>
         </LinearLayout>
+
+        <!-- الدواء / Médicament -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -135,27 +177,31 @@
             android:background="@drawable/bg_card"
             android:padding="18dp"
             android:layout_marginBottom="16dp">
+
             <CheckBox
                 android:id="@+id/checkMedication"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="تناولت الدواء اليوم"
+                android:text="💊 تناولت الدواء اليوم / Médicament pris aujourd'hui"
                 android:textColor="#e2f0ff"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:buttonTint="#00f5a0"/>
         </LinearLayout>
+
+        <!-- ملاحظة / Note -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/bg_card"
             android:padding="18dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="16dp">
+
             <EditText
                 android:id="@+id/editNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="ملاحظة اليوم..."
+                android:hint="ملاحظة اليوم / Note du jour..."
                 android:textColor="#e2f0ff"
                 android:textColorHint="#3a6a96"
                 android:background="@drawable/bg_input"
@@ -164,13 +210,33 @@
                 android:minLines="3"
                 android:textSize="14sp"/>
         </LinearLayout>
+
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="حفظ بيانات اليوم"
+            android:text="حفظ بيانات اليوم / Enregistrer"
             android:backgroundTint="#0077b6"
             android:textColor="#ffffff"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/btnMedications"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="💊 الأدوية / Médicaments"
+            android:backgroundTint="#1a3a5c"
+            android:textColor="#00b4d8"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/btnProfile"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="👤 ملف المريض / Profil Patient"
+            android:backgroundTint="#1a3a5c"
+            android:textColor="#00f5a0"/>
+
     </LinearLayout>
 </ScrollView>
