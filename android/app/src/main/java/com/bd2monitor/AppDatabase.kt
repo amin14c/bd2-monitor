@@ -6,13 +6,19 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [DailyRecord::class],
-    version = 1,
+    entities = [
+        DailyRecord::class,
+        Medication::class,
+        PatientProfile::class
+    ],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun recordDao(): RecordDao
+    abstract fun medicationDao(): MedicationDao
+    abstract fun patientProfileDao(): PatientProfileDao
 
     companion object {
         @Volatile
@@ -20,11 +26,13 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
-           val instance = Room.databaseBuilder(
+                val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "bd2_monitor_db"
-                ).build()
+                )
+                .fallbackToDestructiveMigration()
+                .build()
                 INSTANCE = instance
                 instance
             }
