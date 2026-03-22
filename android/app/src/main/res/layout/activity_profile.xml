@@ -1,0 +1,118 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#060d1a">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="👤 ملف المريض / Profil Patient"
+            android:textColor="#00b4d8"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <EditText
+            android:id="@+id/editNameAr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="الاسم الكامل بالعربية"
+            android:textColor="#e2f0ff"
+            android:textColorHint="#3a6a96"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/editNameFr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nom complet en français"
+            android:textColor="#e2f0ff"
+            android:textColorHint="#3a6a96"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/editBirthDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="تاريخ الميلاد / Date de naissance (ex: 1990-05-20)"
+            android:textColor="#e2f0ff"
+            android:textColorHint="#3a6a96"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/editDiagnosis"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="التشخيص / Diagnostic"
+            android:textColor="#e2f0ff"
+            android:textColorHint="#3a6a96"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/editDoctorName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="اسم الطبيب / Nom du médecin"
+            android:textColor="#e2f0ff"
+            android:textColorHint="#3a6a96"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/editEmergency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="جهة اتصال الطوارئ / Contact d'urgence"
+            android:textColor="#e2f0ff"
+            android:textColorHint="#3a6a96"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/editProfileNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="ملاحظات / Notes"
+            android:textColor="#e2f0ff"
+            android:textColorHint="#3a6a96"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:minLines="3"
+            android:inputType="textMultiLine"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btnSaveProfile"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="حفظ / Enregistrer"
+            android:backgroundTint="#0077b6"
+            android:textColor="#ffffff"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="رجوع / Retour"
+            android:backgroundTint="#1a3a5c"
+            android:textColor="#ffffff"/>
+
+    </LinearLayout>
+</ScrollView>
