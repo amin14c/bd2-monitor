@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <uses-feature
         android:name="android.hardware.sensor.stepcounter"
@@ -21,6 +24,18 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MedicationActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ProfileActivity"
+            android:exported="false"/>
+
+        <receiver
+            android:name=".MedicationReceiver"
+            android:exported="false"/>
 
     </application>
 </manifest>
