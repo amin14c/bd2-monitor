@@ -2,6 +2,7 @@ package com.bd2monitor
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -40,15 +41,35 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         db = AppDatabase.getDatabase(this)
 
         setupSliders()
-        setupSaveButton()
+        setupButtons()
         loadTodayRecord()
         checkAndRequestSensorPermission()
         showTodayDate()
+        loadPatientName()
     }
 
     private fun showTodayDate() {
         val fmt = SimpleDateFormat("EEEE، d MMMM yyyy", Locale("ar"))
         binding.txtDate.text = fmt.format(Date())
+    }
+
+    private fun loadPatientName() {
+        db.patientProfileDao().getProfile().observe(this) { profile ->
+            profile?.let {
+                val name = it.fullNameAr.ifEmpty { it.fullNameFr }
+                binding.txtPatientName.text = "👤 $name"
+            }
+        }
+    }
+
+    private fun setupButtons() {
+        binding.btnSave.setOnClickListener { saveRecord() }
+        binding.btnMedications.setOnClickListener {
+            startActivity(Intent(this, MedicationActivity::class.java))
+        }
+        binding.btnProfile.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
+        }
     }
 
     private fun setupSliders() {
@@ -78,10 +99,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         })
     }
 
-    private fun setupSaveButton() {
-        binding.btnSave.setOnClickListener { saveRecord() }
-    }
-
     private fun saveRecord() {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val record = DailyRecord(
@@ -96,7 +113,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         lifecycleScope.launch {
             db.recordDao().insert(record)
             runOnUiThread {
-                Toast.makeText(this@MainActivity, "✅ تم حفظ البيانات", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity,
+                    "✅ تم الحفظ / Enregistré", Toast.LENGTH_SHORT).show()
                 binding.btnSave.text = "✅ تم الحفظ"
             }
         }
@@ -113,7 +131,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     binding.sliderSleep.progress = (rec.sleepHours * 2).toInt()
                     binding.checkMedication.isChecked = rec.medicationTaken
                     binding.editNote.setText(rec.note)
-                    binding.btnSave.text = "🔄 تحديث بيانات اليوم"
+                    binding.btnSave.text = "🔄 تحديث / Mettre à jour"
                 }
             }
         }
@@ -138,14 +156,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         if (stepSensor != null) {
             sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI)
         } else {
-            binding.txtSteps.text = "حساس الخطوات غير متوفر"
+            binding.txtSteps.text = "حساس الخطوات غير متوفر / Capteur non disponible"
         }
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
             stepCount = event.values[0].toInt()
-            binding.txtSteps.text = "👟 $stepCount خطوة اليوم"
+            binding.txtSteps.text = "👟 $stepCount خطوة / pas"
         }
     }
 
