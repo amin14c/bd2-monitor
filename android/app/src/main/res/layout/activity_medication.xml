@@ -1,0 +1,106 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#060d1a">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="💊 الأدوية / Médicaments"
+            android:textColor="#00b4d8"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <EditText
+            android:id="@+id/editMedNameAr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="اسم الدواء بالعربية"
+            android:textColor="#e2f0ff"
+            android:textColorHint="#3a6a96"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/editMedNameFr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nom du médicament en français"
+            android:textColor="#e2f0ff"
+            android:textColorHint="#3a6a96"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <EditText
+            android:id="@+id/editDosage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="الجرعة / Dosage (ex: 200mg)"
+            android:textColor="#e2f0ff"
+            android:textColorHint="#3a6a96"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="وقت التنبيه / Heure du rappel"
+            android:textColor="#5b8db8"
+            android:textSize="13sp"
+            android:layout_marginBottom="8dp"/>
+
+        <TimePicker
+            android:id="@+id/timePicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btnSaveMed"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="حفظ / Enregistrer"
+            android:backgroundTint="#0077b6"
+            android:textColor="#ffffff"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="الأدوية المضافة / Médicaments ajoutés"
+            android:textColor="#00b4d8"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/txtMedList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#e2f0ff"
+            android:textSize="13sp"
+            android:background="@drawable/bg_card"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="رجوع / Retour"
+            android:backgroundTint="#1a3a5c"
+            android:textColor="#ffffff"/>
+
+    </LinearLayout>
+</ScrollView>
