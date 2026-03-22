@@ -9,6 +9,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -44,34 +45,50 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         checkAndRequestSensorPermission()
         showTodayDate()
     }
-private fun showTodayDate() {
+
+    private fun showTodayDate() {
         val fmt = SimpleDateFormat("EEEE، d MMMM yyyy", Locale("ar"))
         binding.txtDate.text = fmt.format(Date())
     }
 
     private fun setupSliders() {
-        binding.sliderMood.addOnChangeListener { _, value, _ ->
-            binding.txtMoodVal.text = value.toInt().toString()
-        }
-        binding.sliderEnergy.addOnChangeListener { _, value, _ ->
-            binding.txtEnergyVal.text = value.toInt().toString()
-        }
-        binding.sliderSleep.addOnChangeListener { _, value, _ ->
-            binding.txtSleepVal.text = String.format("%.1f", value)
-        }
+        binding.sliderMood.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                binding.txtMoodVal.text = progress.toString()
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        binding.sliderEnergy.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                binding.txtEnergyVal.text = progress.toString()
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        binding.sliderSleep.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val hours = progress / 2.0f
+                binding.txtSleepVal.text = String.format("%.1f", hours)
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 
     private fun setupSaveButton() {
-        binding.btnSave.setOnClickListener
-      }
+        binding.btnSave.setOnClickListener { saveRecord() }
+    }
 
     private fun saveRecord() {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val record = DailyRecord(
             date = today,
-            mood = binding.sliderMood.value.toInt(),
-            energy = binding.sliderEnergy.value.toInt(),
-            sleepHours = binding.sliderSleep.value,
+            mood = binding.sliderMood.progress,
+            energy = binding.sliderEnergy.progress,
+            sleepHours = binding.sliderSleep.progress / 2.0f,
             medicationTaken = binding.checkMedication.isChecked,
             steps = stepCount,
             note = binding.editNote.text.toString().trim()
@@ -85,7 +102,22 @@ private fun showTodayDate() {
         }
     }
 
-}
+    private fun loadTodayRecord() {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        lifecycleScope.launch {
+            val existing = db.recordDao().getByDate(today)
+            existing?.let { rec ->
+                runOnUiThread {
+                    binding.sliderMood.progress = rec.mood
+                    binding.sliderEnergy.progress = rec.energy
+                    binding.sliderSleep.progress = (rec.sleepHours * 2).toInt()
+                    binding.checkMedication.isChecked = rec.medicationTaken
+                    binding.editNote.setText(rec.note)
+                    binding.btnSave.text = "🔄 تحديث بيانات اليوم"
+                }
+            }
+        }
+    }
 
     private fun checkAndRequestSensorPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -106,10 +138,11 @@ private fun showTodayDate() {
         if (stepSensor != null) {
             sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI)
         } else {
-            binding.txtSteps.text = "👟 حساس الخطوات غير متوفر"
+            binding.txtSteps.text = "حساس الخطوات غير متوفر"
         }
     }
-override fun onSensorChanged(event: SensorEvent?) {
+
+    override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
             stepCount = event.values[0].toInt()
             binding.txtSteps.text = "👟 $stepCount خطوة اليوم"
@@ -133,6 +166,5 @@ override fun onSensorChanged(event: SensorEvent?) {
         if (::sensorManager.isInitialized) {
             sensorManager.unregisterListener(this)
         }
+    }
 }
-}
-    
