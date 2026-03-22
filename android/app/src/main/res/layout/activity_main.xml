@@ -1,5 +1,5 @@
+ 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#060d1a"
@@ -43,26 +43,20 @@
                 android:layout_height="wrap_content"
                 android:text="المزاج (0-10)"
                 android:textColor="#5b8db8"
-                android:textSize="12sp"
-                android:layout_marginBottom="4dp"/>
+                android:textSize="12sp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <com.google.android.material.slider.Slider
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+                <SeekBar
                     android:id="@+id/sliderMood"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:valueFrom="0"
-                    app:valueTo="10"
-                    app:stepSize="1"
-                    app:value="5"
-                    app:thumbColor="#00b4d8"
-                    app:trackColorActive="#00b4d8"
-                    app:trackColorInactive="#1e3a5f"
-                    app:labelBehavior="gone"/>
+                    android:max="10"
+                    android:progress="5"/>
                 <TextView
                     android:id="@+id/txtMoodVal"
                     android:layout_width="36dp"
@@ -79,26 +73,20 @@
                 android:text="الطاقة (0-10)"
                 android:textColor="#5b8db8"
                 android:textSize="12sp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="4dp"/>
+                android:layout_marginTop="14dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <com.google.android.material.slider.Slider
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+                <SeekBar
                     android:id="@+id/sliderEnergy"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:valueFrom="0"
-                    app:valueTo="10"
-                    app:stepSize="1"
-                    app:value="5"
-                    app:thumbColor="#00f5a0"
-                    app:trackColorActive="#00f5a0"
-                    app:trackColorInactive="#1e3a5f"
-                    app:labelBehavior="gone"/>
+                    android:max="10"
+                    android:progress="5"/>
                 <TextView
                     android:id="@+id/txtEnergyVal"
                     android:layout_width="36dp"
@@ -115,26 +103,20 @@
                 android:text="ساعات النوم (0-12)"
                 android:textColor="#5b8db8"
                 android:textSize="12sp"
-                android:layout_marginTop="14dp"
-                android:layout_marginBottom="4dp"/>
+                android:layout_marginTop="14dp"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
-                <com.google.android.material.slider.Slider
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+                <SeekBar
                     android:id="@+id/sliderSleep"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:valueFrom="0"
-                    app:valueTo="12"
-                    app:stepSize="0.5"
-                    app:value="7"
-                    app:thumbColor="#ffd60a"
-                    app:trackColorActive="#ffd60a"
-                    app:trackColorInactive="#1e3a5f"
-                    app:labelBehavior="gone"/>
+                    android:max="24"
+                    android:progress="14"/>
                 <TextView
                     android:id="@+id/txtSleepVal"
                     android:layout_width="40dp"
@@ -182,14 +164,13 @@
                 android:minLines="3"
                 android:textSize="14sp"/>
         </LinearLayout>
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:text="حفظ بيانات اليوم"
-            app:backgroundTint="#0077b6"
+            android:backgroundTint="#0077b6"
             android:textColor="#ffffff"
-            android:textSize="16sp"
-            app:cornerRadius="12dp"/>
+            android:textSize="16sp"/>
     </LinearLayout>
 </ScrollView>
