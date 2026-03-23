@@ -45,54 +45,20 @@ jobs:
 
       - name: Recreate Room files
         run: |
-          cat > app/src/main/java/com/bd2monitor/DailyRecord.kt << 'EOF'
-          package com.bd2monitor
-          import androidx.room.Entity
-          import androidx.room.PrimaryKey
-          @Entity(tableName = "daily_records")
-          data class DailyRecord(
-              @PrimaryKey(autoGenerate = true) val id: Int = 0,
-              val date: String,
-              val mood: Int,
-              val energy: Int,
-              val sleepHours: Float,
-              val medicationTaken: Boolean,
-              val steps: Int = 0,
-              val note: String = "",
-              val timestamp: Long = System.currentTimeMillis()
-          )
-          EOF
-          cat > app/src/main/java/com/bd2monitor/Medication.kt << 'EOF'
-          package com.bd2monitor
-          import androidx.room.Entity
-          import androidx.room.PrimaryKey
-          @Entity(tableName = "medications")
-          data class Medication(
-              @PrimaryKey(autoGenerate = true) val id: Int = 0,
-              val nameFr: String,
-              val nameAr: String,
-              val dosage: String,
-              val timeHour: Int,
-              val timeMinute: Int,
-              val isActive: Boolean = true
-          )
-          EOF
-          cat > app/src/main/java/com/bd2monitor/PatientProfile.kt << 'EOF'
-          package com.bd2monitor
-          import androidx.room.Entity
-          import androidx.room.PrimaryKey
-          @Entity(tableName = "patient_profile")
-          data class PatientProfile(
-              @PrimaryKey val id: Int = 1,
-              val fullNameAr: String = "",
-              val fullNameFr: String = "",
-              val birthDate: String = "",
-              val diagnosis: String = "",
-              val doctorName: String = "",
-              val emergencyContact: String = "",
-              val notes: String = ""
-          )
-          EOF
+          python3 - << 'PYEOF'
+          import os
+          base = "app/src/main/java/com/bd2monitor"
+          os.makedirs(base, exist_ok=True)
+          files = {
+          "DailyRecord.kt": "package com.bd2monitor\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n@Entity(tableName = \"daily_records\")\ndata class DailyRecord(\n    @PrimaryKey(autoGenerate = true) val id: Int = 0,\n    val date: String,\n    val mood: Int,\n    val energy: Int,\n    val sleepHours: Float,\n    val medicationTaken: Boolean,\n    val steps: Int = 0,\n    val note: String = \"\",\n    val timestamp: Long = System.currentTimeMillis()\n)",
+          "Medication.kt": "package com.bd2monitor\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n@Entity(tableName = \"medications\")\ndata class Medication(\n    @PrimaryKey(autoGenerate = true) val id: Int = 0,\n    val nameFr: String,\n    val nameAr: String,\n    val dosage: String,\n    val timeHour: Int,\n    val timeMinute: Int,\n    val isActive: Boolean = true\n)",
+          "PatientProfile.kt": "package com.bd2monitor\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n@Entity(tableName = \"patient_profile\")\ndata class PatientProfile(\n    @PrimaryKey val id: Int = 1,\n    val fullNameAr: String = \"\",\n    val fullNameFr: String = \"\",\n    val birthDate: String = \"\",\n    val diagnosis: String = \"\",\n    val doctorName: String = \"\",\n    val emergencyContact: String = \"\",\n    val notes: String = \"\"\n)"
+          }
+          for name, content in files.items():
+              with open(f"{base}/{name}", "w") as f:
+                  f.write(content)
+              print(f"Written: {name}")
+          PYEOF
 
       - name: Build Release APK
         run: ./gradlew assembleRelease
