@@ -40,8 +40,8 @@ jobs:
 
       - name: Fix file encoding
         run: |
-          find find app/src -name "*.kt" -exec sed -i 's/\r//' {} \;
-          find find app/src -name "*.kt" -exec sed -i 's/^\xEF\xBB\xBF//' {} \;
+          find app/src -name "*.kt" -exec sed -i 's/\r//' {} \;
+          find app/src -name "*.kt" -exec sed -i 's/^\xEF\xBB\xBF//' {} \;
 
       - name: Build Release APK
         run: ./gradlew assembleRelease
