@@ -43,6 +43,57 @@ jobs:
           find app/src -name "*.kt" -exec sed -i 's/\r//' {} \;
           find app/src -name "*.kt" -exec sed -i 's/^\xEF\xBB\xBF//' {} \;
 
+      - name: Recreate Room files
+        run: |
+          cat > app/src/main/java/com/bd2monitor/DailyRecord.kt << 'EOF'
+          package com.bd2monitor
+          import androidx.room.Entity
+          import androidx.room.PrimaryKey
+          @Entity(tableName = "daily_records")
+          data class DailyRecord(
+              @PrimaryKey(autoGenerate = true) val id: Int = 0,
+              val date: String,
+              val mood: Int,
+              val energy: Int,
+              val sleepHours: Float,
+              val medicationTaken: Boolean,
+              val steps: Int = 0,
+              val note: String = "",
+              val timestamp: Long = System.currentTimeMillis()
+          )
+          EOF
+          cat > app/src/main/java/com/bd2monitor/Medication.kt << 'EOF'
+          package com.bd2monitor
+          import androidx.room.Entity
+          import androidx.room.PrimaryKey
+          @Entity(tableName = "medications")
+          data class Medication(
+              @PrimaryKey(autoGenerate = true) val id: Int = 0,
+              val nameFr: String,
+              val nameAr: String,
+              val dosage: String,
+              val timeHour: Int,
+              val timeMinute: Int,
+              val isActive: Boolean = true
+          )
+          EOF
+          cat > app/src/main/java/com/bd2monitor/PatientProfile.kt << 'EOF'
+          package com.bd2monitor
+          import androidx.room.Entity
+          import androidx.room.PrimaryKey
+          @Entity(tableName = "patient_profile")
+          data class PatientProfile(
+              @PrimaryKey val id: Int = 1,
+              val fullNameAr: String = "",
+              val fullNameFr: String = "",
+              val birthDate: String = "",
+              val diagnosis: String = "",
+              val doctorName: String = "",
+              val emergencyContact: String = "",
+              val notes: String = ""
+          )
+          EOF
+
       - name: Build Release APK
         run: ./gradlew assembleRelease
         env:
