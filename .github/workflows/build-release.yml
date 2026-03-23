@@ -38,6 +38,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Fix file encoding
+        run: |
+          find ../app/src -name "*.kt" -exec sed -i 's/\r//' {} \;
+          find ../app/src -name "*.kt" -exec sed -i 's/^\xEF\xBB\xBF//' {} \;
+
       - name: Build Release APK
         run: ./gradlew assembleRelease
         env:
