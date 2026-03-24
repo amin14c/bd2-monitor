@@ -1,2 +1,4 @@
 - name: Clean project
   run: ./gradlew clean
+- name: Build Debug APK
+  run: ./gradlew assembleDebug
