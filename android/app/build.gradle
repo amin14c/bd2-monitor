@@ -15,9 +15,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
-ksp {
-    arg("room.incremental", "false")
-}
+
     buildFeatures {
         viewBinding true
     }
@@ -49,6 +47,12 @@ ksp {
     }
 }
 
+// إعدادات KSP لمنع خطأ FileAlreadyExistsException
+ksp {
+    arg("room.incremental", "false")
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 dependencies {
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -58,5 +62,5 @@ dependencies {
 
     implementation 'androidx.room:room-runtime:2.6.1'
     implementation 'androidx.room:room-ktx:2.6.1'
-    ksp 'androidx.room:room-compiler:2.6.1'   // تم تصحيح المسافة الزائدة
+    ksp 'androidx.room:room-compiler:2.6.1'
 }
