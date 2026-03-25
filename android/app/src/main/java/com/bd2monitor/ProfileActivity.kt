@@ -26,15 +26,32 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun saveProfile() {
+        val firstName = binding.editFirstName.text.toString().trim()
+        val lastName = binding.editLastName.text.toString().trim()
+        val job = binding.editJob.text.toString().trim()
+        val ageText = binding.editAge.text.toString().trim()
+        val diagnosisDate = binding.editDiagnosisDate.text.toString().trim()
+        val phone = binding.editPhone.text.toString().trim()
+
+        if (firstName.isEmpty() || lastName.isEmpty() || ageText.isEmpty()) {
+            Toast.makeText(this, "الرجاء إدخال الاسم واللقب والسن", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val age = ageText.toIntOrNull() ?: run {
+            Toast.makeText(this, "السن يجب أن يكون رقمًا", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val profile = PatientProfile(
-            fullNameAr = binding.editNameAr.text.toString().trim(),
-            fullNameFr = binding.editNameFr.text.toString().trim(),
-            birthDate = binding.editBirthDate.text.toString().trim(),
-            diagnosis = binding.editDiagnosis.text.toString().trim(),
-            doctorName = binding.editDoctorName.text.toString().trim(),
-            emergencyContact = binding.editEmergency.text.toString().trim(),
-            notes = binding.editProfileNotes.text.toString().trim()
+            firstName = firstName,
+            lastName = lastName,
+            job = job,
+            age = age,
+            diagnosisDate = diagnosisDate,
+            phone = phone
         )
+
         lifecycleScope.launch {
             db.patientProfileDao().insert(profile)
             runOnUiThread {
@@ -47,13 +64,12 @@ class ProfileActivity : AppCompatActivity() {
     private fun loadProfile() {
         db.patientProfileDao().getProfile().observe(this) { profile ->
             profile?.let {
-                binding.editNameAr.setText(it.fullNameAr)
-                binding.editNameFr.setText(it.fullNameFr)
-                binding.editBirthDate.setText(it.birthDate)
-                binding.editDiagnosis.setText(it.diagnosis)
-                binding.editDoctorName.setText(it.doctorName)
-                binding.editEmergency.setText(it.emergencyContact)
-                binding.editProfileNotes.setText(it.notes)
+                binding.editFirstName.setText(it.firstName)
+                binding.editLastName.setText(it.lastName)
+                binding.editJob.setText(it.job)
+                binding.editAge.setText(it.age.toString())
+                binding.editDiagnosisDate.setText(it.diagnosisDate)
+                binding.editPhone.setText(it.phone)
             }
         }
     }
