@@ -1,39 +1,17 @@
+
 package com.bd2monitor
 
-import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Database(
-    entities = [
-        DailyRecord::class,
-        Medication::class
-    ],
-    version = 2,
-    exportSchema = false
+@Entity(tableName = "patient_profiles")
+data class PatientProfile(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val firstName: String,      // الاسم
+    val lastName: String,       // اللقب
+    val job: String,            // الوظيفة
+    val age: Int,               // السن
+    val diagnosisDate: String,  // تاريخ التشخيص (مثلاً "2025-03-25")
+    val phone: String           // رقم الهاتف
 )
-abstract class AppDatabase : RoomDatabase() {
-
-    abstract fun recordDao(): RecordDao
-    abstract fun medicationDao(): MedicationDao
-
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
-
-        fun getDatabase(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "bd2_monitor_db"
-                )
-                .fallbackToDestructiveMigration()
-                .build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }
-}
