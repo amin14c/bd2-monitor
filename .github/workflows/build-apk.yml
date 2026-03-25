@@ -29,7 +29,7 @@ jobs:
       - name: Clean and prepare
         run: |
           cd android
-          rm -rf app/build/generated/ksp
+          rm -rf app/build
           gradle clean
 
       - name: Build Debug APK
