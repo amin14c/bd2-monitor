@@ -26,20 +26,23 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun saveProfile() {
-        val firstName = binding.editFirstName.text.toString().trim()
-        val lastName = binding.editLastName.text.toString().trim()
-        val job = binding.editJob.text.toString().trim()
-        val ageText = binding.editAge.text.toString().trim()
-        val diagnosisDate = binding.editDiagnosisDate.text.toString().trim()
-        val phone = binding.editPhone.text.toString().trim()
+        // استخدام الحقول الموجودة في التخطيط (من activity_profile.xml)
+        val firstName = binding.editNameAr.text.toString().trim()
+        val lastName = binding.editNameFr.text.toString().trim()
+        val job = binding.editDoctorName.text.toString().trim()   // الوظيفة
+        val ageText = binding.editBirthDate.text.toString().trim()  // العمر (سلسلة)
+        val diagnosisDate = binding.editDiagnosis.text.toString().trim()  // تاريخ التشخيص
+        val phone = binding.editEmergency.text.toString().trim()  // رقم الهاتف
+        val notes = binding.editProfileNotes.text.toString().trim() // ملاحظات إضافية (غير مستخدمة حالياً)
 
         if (firstName.isEmpty() || lastName.isEmpty() || ageText.isEmpty()) {
-            Toast.makeText(this, "الرجاء إدخال الاسم واللقب والسن", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "الرجاء إدخال الاسم واللقب والعمر", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val age = ageText.toIntOrNull() ?: run {
-            Toast.makeText(this, "السن يجب أن يكون رقمًا", Toast.LENGTH_SHORT).show()
+        val age = ageText.toIntOrNull()
+        if (age == null) {
+            Toast.makeText(this, "العمر يجب أن يكون رقماً", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -64,12 +67,13 @@ class ProfileActivity : AppCompatActivity() {
     private fun loadProfile() {
         db.patientProfileDao().getProfile().observe(this) { profile ->
             profile?.let {
-                binding.editFirstName.setText(it.firstName)
-                binding.editLastName.setText(it.lastName)
-                binding.editJob.setText(it.job)
-                binding.editAge.setText(it.age.toString())
-                binding.editDiagnosisDate.setText(it.diagnosisDate)
-                binding.editPhone.setText(it.phone)
+                binding.editNameAr.setText(it.firstName)
+                binding.editNameFr.setText(it.lastName)
+                binding.editDoctorName.setText(it.job)
+                binding.editBirthDate.setText(it.age.toString())
+                binding.editDiagnosis.setText(it.diagnosisDate)
+                binding.editEmergency.setText(it.phone)
+                // binding.editProfileNotes.setText(it.notes) // إذا أضفنا notes لاحقاً
             }
         }
     }
