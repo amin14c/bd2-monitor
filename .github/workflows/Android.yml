@@ -20,14 +20,19 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Download Gradle 8.9
-        run: |
-          wget https://services.gradle.org/distributions/gradle-8.9-bin.zip
-          unzip gradle-8.9-bin.zip
-          echo "$PWD/gradle-8.9/bin" >> $GITHUB_PATH
-
       - name: Clean project
-        run: gradle clean
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew clean
 
       - name: Build Debug APK
-        run: gradle assembleDebug
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: android/app/build/outputs/apk/debug/app-debug.apk
