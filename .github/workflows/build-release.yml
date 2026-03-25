@@ -1,4 +1,4 @@
-name: Build Release APK
+Build Release APK
 
 on:
   push:
@@ -40,24 +40,24 @@ jobs:
 
       - name: Recreate Room files
         run: |
-          python3 << 'PYEOF'
-          import os
-          base = "app/src/main/java/com/bd2monitor"
-          os.makedirs(base, exist_ok=True)
-          files = {
-          "DailyRecord.kt": "package com.bd2monitor\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n@Entity(tableName = \"daily_records\")\ndata class DailyRecord(\n    @PrimaryKey(autoGenerate = true) val id: Int = 0,\n    val date: String,\n    val mood: Int,\n    val energy: Int,\n    val sleepHours: Float,\n    val medicationTaken: Boolean,\n    val steps: Int = 0,\n    val note: String = \"\",\n    val timestamp: Long = System.currentTimeMillis()\n)",
-          "Medication.kt": "package com.bd2monitor\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n@Entity(tableName = \"medications\")\ndata class Medication(\n    @PrimaryKey(autoGenerate = true) val id: Int = 0,\n    val nameFr: String,\n    val nameAr: String,\n    val dosage: String,\n    val timeHour: Int,\n    val timeMinute: Int,\n    val isActive: Boolean = true\n)",
-          "PatientProfile.kt": "package com.bd2monitor\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n@Entity(tableName = \"patient_profile\")\ndata class PatientProfile(\n    @PrimaryKey val id: Int = 1,\n    val fullNameAr: String = \"\",\n    val fullNameFr: String = \"\",\n    val birthDate: String = \"\",\n    val diagnosis: String = \"\",\n    val doctorName: String = \"\",\n    val emergencyContact: String = \"\",\n    val notes: String = \"\"\n)",
-          "RecordDao.kt": "package com.bd2monitor\nimport androidx.lifecycle.LiveData\nimport androidx.room.*\n@Dao\ninterface RecordDao {\n    @Insert(onConflict = OnConflictStrategy.REPLACE)\n    suspend fun insert(record: DailyRecord)\n    @Query(\"SELECT * FROM daily_records ORDER BY timestamp DESC\")\n    fun getAllRecords(): LiveData<List<DailyRecord>>\n    @Query(\"SELECT * FROM daily_records WHERE date = :date LIMIT 1\")\n    suspend fun getByDate(date: String): DailyRecord?\n    @Query(\"SELECT * FROM daily_records ORDER BY timestamp DESC LIMIT 30\")\n    suspend fun getLast30(): List<DailyRecord>\n    @Query(\"DELETE FROM daily_records\")\n    suspend fun deleteAll()\n}",
-          "MedicationDao.kt": "package com.bd2monitor\nimport androidx.lifecycle.LiveData\nimport androidx.room.*\n@Dao\ninterface MedicationDao {\n    @Insert(onConflict = OnConflictStrategy.REPLACE)\n    suspend fun insert(medication: Medication)\n    @Update\n    suspend fun update(medication: Medication)\n    @Delete\n    suspend fun delete(medication: Medication)\n    @Query(\"SELECT * FROM medications WHERE isActive = 1 ORDER BY timeHour, timeMinute\")\n    fun getAllActive(): LiveData<List<Medication>>\n    @Query(\"SELECT * FROM medications ORDER BY timeHour, timeMinute\")\n    suspend fun getAll(): List<Medication>\n}",
-          "PatientProfileDao.kt": "package com.bd2monitor\nimport androidx.lifecycle.LiveData\nimport androidx.room.*\n@Dao\ninterface PatientProfileDao {\n    @Insert(onConflict = OnConflictStrategy.REPLACE)\n    suspend fun insert(profile: PatientProfile)\n    @Update\n    suspend fun update(profile: PatientProfile)\n    @Query(\"SELECT * FROM patient_profile WHERE id = 1\")\n    fun getProfile(): LiveData<PatientProfile?>\n    @Query(\"SELECT * FROM patient_profile WHERE id = 1\")\n    suspend fun getProfileOnce(): PatientProfile?\n}",
-          "AppDatabase.kt": "package com.bd2monitor\nimport android.content.Context\nimport androidx.room.Database\nimport androidx.room.Room\nimport androidx.room.RoomDatabase\n@Database(\n    entities = [DailyRecord::class, Medication::class, PatientProfile::class],\n    version = 2,\n    exportSchema = false\n)\nabstract class AppDatabase : RoomDatabase() {\n    abstract fun recordDao(): RecordDao\n    abstract fun medicationDao(): MedicationDao\n    abstract fun patientProfileDao(): PatientProfileDao\n    companion object {\n        @Volatile private var INSTANCE: AppDatabase? = null\n        fun getDatabase(context: Context): AppDatabase {\n            return INSTANCE ?: synchronized(this) {\n                val instance = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, \"bd2_monitor_db\").fallbackToDestructiveMigration().build()\n                INSTANCE = instance\n                instance\n            }\n        }\n    }\n}"
-          }
-          for name, content in files.items():
-              with open(f"{base}/{name}", "w", encoding="utf-8") as f:
-                  f.write(content)
-              print(f"Written: {name}")
-          PYEOF
+          cat > /tmp/gen.py << 'EOF'
+import os
+base = "android/app/src/main/java/com/bd2monitor"
+os.makedirs(base, exist_ok=True)
+files = {}
+files["DailyRecord.kt"] = 'package com.bd2monitor\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n@Entity(tableName = "daily_records")\ndata class DailyRecord(\n    @PrimaryKey(autoGenerate = true) val id: Int = 0,\n    val date: String,\n    val mood: Int,\n    val energy: Int,\n    val sleepHours: Float,\n    val medicationTaken: Boolean,\n    val steps: Int = 0,\n    val note: String = "",\n    val timestamp: Long = System.currentTimeMillis()\n)'
+files["Medication.kt"] = 'package com.bd2monitor\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n@Entity(tableName = "medications")\ndata class Medication(\n    @PrimaryKey(autoGenerate = true) val id: Int = 0,\n    val nameFr: String,\n    val nameAr: String,\n    val dosage: String,\n    val timeHour: Int,\n    val timeMinute: Int,\n    val isActive: Boolean = true\n)'
+files["PatientProfile.kt"] = 'package com.bd2monitor\nimport androidx.room.Entity\nimport androidx.room.PrimaryKey\n@Entity(tableName = "patient_profile")\ndata class PatientProfile(\n    @PrimaryKey val id: Int = 1,\n    val fullNameAr: String = "",\n    val fullNameFr: String = "",\n    val birthDate: String = "",\n    val diagnosis: String = "",\n    val doctorName: String = "",\n    val emergencyContact: String = "",\n    val notes: String = ""\n)'
+files["RecordDao.kt"] = 'package com.bd2monitor\nimport androidx.lifecycle.LiveData\nimport androidx.room.*\n@Dao\ninterface RecordDao {\n    @Insert(onConflict = OnConflictStrategy.REPLACE)\n    suspend fun insert(record: DailyRecord)\n    @Query("SELECT * FROM daily_records ORDER BY timestamp DESC")\n    fun getAllRecords(): LiveData<List<DailyRecord>>\n    @Query("SELECT * FROM daily_records WHERE date = :date LIMIT 1")\n    suspend fun getByDate(date: String): DailyRecord?\n    @Query("SELECT * FROM daily_records ORDER BY timestamp DESC LIMIT 30")\n    suspend fun getLast30(): List<DailyRecord>\n    @Query("DELETE FROM daily_records")\n    suspend fun deleteAll()\n}'
+files["MedicationDao.kt"] = 'package com.bd2monitor\nimport androidx.lifecycle.LiveData\nimport androidx.room.*\n@Dao\ninterface MedicationDao {\n    @Insert(onConflict = OnConflictStrategy.REPLACE)\n    suspend fun insert(medication: Medication)\n    @Update\n    suspend fun update(medication: Medication)\n    @Delete\n    suspend fun delete(medication: Medication)\n    @Query("SELECT * FROM medications WHERE isActive = 1 ORDER BY timeHour, timeMinute")\n    fun getAllActive(): LiveData<List<Medication>>\n    @Query("SELECT * FROM medications ORDER BY timeHour, timeMinute")\n    suspend fun getAll(): List<Medication>\n}'
+files["PatientProfileDao.kt"] = 'package com.bd2monitor\nimport androidx.lifecycle.LiveData\nimport androidx.room.*\n@Dao\ninterface PatientProfileDao {\n    @Insert(onConflict = OnConflictStrategy.REPLACE)\n    suspend fun insert(profile: PatientProfile)\n    @Update\n    suspend fun update(profile: PatientProfile)\n    @Query("SELECT * FROM patient_profile WHERE id = 1")\n    fun getProfile(): LiveData<PatientProfile?>\n    @Query("SELECT * FROM patient_profile WHERE id = 1")\n    suspend fun getProfileOnce(): PatientProfile?\n}'
+files["AppDatabase.kt"] = 'package com.bd2monitor\nimport android.content.Context\nimport androidx.room.Database\nimport androidx.room.Room\nimport androidx.room.RoomDatabase\n@Database(entities = [DailyRecord::class, Medication::class, PatientProfile::class], version = 2, exportSchema = false)\nabstract class AppDatabase : RoomDatabase() {\n    abstract fun recordDao(): RecordDao\n    abstract fun medicationDao(): MedicationDao\n    abstract fun patientProfileDao(): PatientProfileDao\n    companion object {\n        @Volatile private var INSTANCE: AppDatabase? = null\n        fun getDatabase(context: Context): AppDatabase {\n            return INSTANCE ?: synchronized(this) {\n                val instance = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "bd2_monitor_db").fallbackToDestructiveMigration().build()\n                INSTANCE = instance\n                instance\n            }\n        }\n    }\n}'
+for name, content in files.items():
+    with open(f"{base}/{name}", "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"Written: {name}")
+EOF
+          python3 /tmp/gen.py
 
       - name: Build Release APK
         run: ./gradlew assembleRelease
