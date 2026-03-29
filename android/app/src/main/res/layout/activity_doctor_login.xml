@@ -1,0 +1,104 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#060d1a"
+    android:padding="32dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="🏥"
+        android:textSize="48sp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BD² Monitor"
+        android:textColor="#00b4d8"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="دخول الطبيب / Accès Médecin"
+        android:textColor="#5b8db8"
+        android:textSize="14sp"
+        android:layout_marginBottom="40dp"/>
+
+    <!-- عرض النقاط -->
+    <LinearLayout
+        android:id="@+id/layoutDots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="32dp">
+
+        <View
+            android:id="@+id/dot1"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:background="@drawable/pin_dot_empty"
+            android:layout_margin="8dp"/>
+
+        <View
+            android:id="@+id/dot2"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:background="@drawable/pin_dot_empty"
+            android:layout_margin="8dp"/>
+
+        <View
+            android:id="@+id/dot3"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:background="@drawable/pin_dot_empty"
+            android:layout_margin="8dp"/>
+
+        <View
+            android:id="@+id/dot4"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:background="@drawable/pin_dot_empty"
+            android:layout_margin="8dp"/>
+
+    </LinearLayout>
+
+    <!-- لوحة الأرقام -->
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:rowCount="4">
+
+        <Button android:id="@+id/btn1" style="@style/PinButton" android:text="1"/>
+        <Button android:id="@+id/btn2" style="@style/PinButton" android:text="2"/>
+        <Button android:id="@+id/btn3" style="@style/PinButton" android:text="3"/>
+        <Button android:id="@+id/btn4" style="@style/PinButton" android:text="4"/>
+        <Button android:id="@+id/btn5" style="@style/PinButton" android:text="5"/>
+        <Button android:id="@+id/btn6" style="@style/PinButton" android:text="6"/>
+        <Button android:id="@+id/btn7" style="@style/PinButton" android:text="7"/>
+        <Button android:id="@+id/btn8" style="@style/PinButton" android:text="8"/>
+        <Button android:id="@+id/btn9" style="@style/PinButton" android:text="9"/>
+        <Button android:id="@+id/btnClear" style="@style/PinButton" android:text="⌫"/>
+        <Button android:id="@+id/btn0" style="@style/PinButton" android:text="0"/>
+        <Button android:id="@+id/btnOk" style="@style/PinButton"
+            android:text="✓"
+            android:backgroundTint="#0077b6"/>
+
+    </GridLayout>
+
+    <TextView
+        android:id="@+id/txtMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#ff6b6b"
+        android:textSize="13sp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"/>
+
+</LinearLayout>
