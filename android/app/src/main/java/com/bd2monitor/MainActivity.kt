@@ -22,29 +22,34 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // تهيئة قاعدة البيانات على خيط خلفي
-        lifecycleScope.launch(Dispatchers.IO) {
-            db = AppDatabase.getDatabase(this@MainActivity)
-        }
+        db = AppDatabase.getDatabase(this)
 
         // تحديث التاريخ
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         binding.txtDate.text = today
 
-        // زر حفظ بيانات اليوم
-        binding.btnSave.setOnClickListener { saveRecord() }
+        // عرض اسم المريض
+        db.patientProfileDao().getProfile().observe(this) { profile ->
+            binding.txtPatientName.text = if (profile != null) {
+                "👤 ${profile.firstName} ${profile.lastName}"
+            } else {
+                "لم يُسجَّل ملف مريض بعد / Aucun profil"
+            }
+        }
 
-        // زر الأدوية
+        // أزرار التنقل
+        binding.btnSave.setOnClickListener { saveRecord() }
+        binding.btnHistory.setOnClickListener {
+            startActivity(Intent(this, HistoryActivity::class.java))
+        }
         binding.btnMedications.setOnClickListener {
             startActivity(Intent(this, MedicationActivity::class.java))
         }
-
-        // زر الملف الشخصي
         binding.btnProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        // تحديث قيم السلايدرات
+        // السلايدرات
         binding.sliderMood.setOnSeekBarChangeListener(object :
             android.widget.SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(sb: android.widget.SeekBar?, progress: Int, fromUser: Boolean) {
@@ -74,11 +79,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveRecord() {
-        if (!::db.isInitialized) {
-            Toast.makeText(this, "جارٍ التحضير، أعد المحاولة / Patientez...", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         val record = DailyRecord(
             date = today,
