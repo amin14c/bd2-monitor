@@ -43,7 +43,6 @@
             android:textSize="13sp"
             android:layout_marginBottom="20dp"/>
 
-        <!-- المزاج / Humeur -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,7 +84,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- الطاقة / Énergie -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -127,7 +125,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- النوم / Sommeil -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -169,7 +166,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- الدواء / Médicament -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -188,7 +184,6 @@
                 android:buttonTint="#00f5a0"/>
         </LinearLayout>
 
-        <!-- ملاحظة / Note -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -219,6 +214,15 @@
             android:backgroundTint="#0077b6"
             android:textColor="#ffffff"
             android:textSize="16sp"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/btnHistory"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="📅 سجل الأيام / Historique"
+            android:backgroundTint="#1a3a5c"
+            android:textColor="#00b4d8"
             android:layout_marginBottom="12dp"/>
 
         <Button
