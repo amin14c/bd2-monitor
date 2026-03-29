@@ -1,0 +1,299 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#060d1a">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- الرأس -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🏥 لوحة الطبيب / Tableau Médecin"
+                android:textColor="#00b4d8"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="خروج"
+                android:textSize="12sp"
+                android:backgroundTint="#1a3a5c"
+                android:textColor="#ff6b6b"/>
+
+        </LinearLayout>
+
+        <!-- معلومات المريض -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="👤 معلومات المريض / Patient"
+                android:textColor="#00b4d8"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/txtPatientInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#e2f0ff"
+                android:textSize="13sp"
+                android:lineSpacingExtra="4dp"/>
+
+        </LinearLayout>
+
+        <!-- المؤشرات التحذيرية -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="⚠️ المؤشرات التحذيرية / Alertes"
+                android:textColor="#ffd60a"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/txtAlerts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#e2f0ff"
+                android:textSize="13sp"
+                android:lineSpacingExtra="4dp"/>
+
+        </LinearLayout>
+
+        <!-- الرسم البياني للمزاج -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📈 المزاج والطاقة / Humeur &amp; Énergie"
+                android:textColor="#00b4d8"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartMoodEnergy"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"/>
+
+        </LinearLayout>
+
+        <!-- الرسم البياني للنوم -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🌙 ساعات النوم / Sommeil"
+                android:textColor="#00b4d8"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/chartSleep"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"/>
+
+        </LinearLayout>
+
+        <!-- إحصائيات سريعة -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="12dp"
+                android:gravity="center"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:id="@+id/txtAvgMood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#00f5a0"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="متوسط المزاج"
+                    android:textColor="#5b8db8"
+                    android:textSize="11sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="12dp"
+                android:gravity="center"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:id="@+id/txtAvgSleep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffd60a"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="متوسط النوم"
+                    android:textColor="#5b8db8"
+                    android:textSize="11sp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:background="@drawable/bg_card"
+                android:padding="12dp"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/txtMedCompliance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#00b4d8"
+                    android:textSize="24sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="التزام الدواء"
+                    android:textColor="#5b8db8"
+                    android:textSize="11sp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- أزرار الإجراءات -->
+        <Button
+            android:id="@+id/btnGenerateReport"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="🤖 توليد تقرير SOAP بـ Gemini"
+            android:backgroundTint="#0077b6"
+            android:textColor="#ffffff"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/btnExportCsv"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="📊 تصدير CSV للبحث / Exporter CSV"
+            android:backgroundTint="#1a3a5c"
+            android:textColor="#00f5a0"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- عرض التقرير -->
+        <LinearLayout
+            android:id="@+id/layoutReport"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📋 تقرير SOAP"
+                android:textColor="#00b4d8"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <ProgressBar
+                android:id="@+id/progressReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/txtReport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#e2f0ff"
+                android:textSize="13sp"
+                android:lineSpacingExtra="4dp"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="رجوع / Retour"
+            android:backgroundTint="#1a3a5c"
+            android:textColor="#ffffff"/>
+
+    </LinearLayout>
+</ScrollView>
