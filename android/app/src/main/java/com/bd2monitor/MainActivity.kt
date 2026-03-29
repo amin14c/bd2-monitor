@@ -48,6 +48,9 @@ class MainActivity : AppCompatActivity() {
         binding.btnProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
+        binding.btnDoctor.setOnClickListener {
+            startActivity(Intent(this, DoctorLoginActivity::class.java))
+        }
 
         // السلايدرات
         binding.sliderMood.setOnSeekBarChangeListener(object :
