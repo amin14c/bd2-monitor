@@ -21,7 +21,9 @@ interface PatientProfileDao {
     @Query("SELECT * FROM patient_profiles WHERE id = :id")
     suspend fun getById(id: Int): PatientProfile?
 
-    // الدالة المستخدمة في ProfileActivity لعرض البيانات الحالية
     @Query("SELECT * FROM patient_profiles LIMIT 1")
     fun getProfile(): LiveData<PatientProfile?>
+
+    @Query("SELECT * FROM patient_profiles LIMIT 1")
+    suspend fun getProfileDirect(): PatientProfile?
 }
