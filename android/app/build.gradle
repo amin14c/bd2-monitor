@@ -47,10 +47,13 @@ android {
     }
 }
 
-// إعدادات KSP لمنع خطأ FileAlreadyExistsException
 ksp {
     arg("room.incremental", "false")
     arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+repositories {
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -63,4 +66,10 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.6.1'
     implementation 'androidx.room:room-ktx:2.6.1'
     ksp 'androidx.room:room-compiler:2.6.1'
+
+    // رسوم بيانية
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // تشفير PIN
+    implementation 'androidx.security:security-crypto:1.1.0-alpha06'
 }
