@@ -1,0 +1,11 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <stroke android:width="2dp" android:color="#5b8db8"/>
+    <size android:width="18dp" android:height="18dp"/>
+</shape>
+android/app/src/main/res/drawable/pin_dot_filled.xml
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="#00b4d8"/>
+    <size android:width="18dp" android:height="18dp"/>
+</shape>
