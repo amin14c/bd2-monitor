@@ -52,10 +52,6 @@ ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
 }
 
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
 dependencies {
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -67,9 +63,6 @@ dependencies {
     implementation 'androidx.room:room-ktx:2.6.1'
     ksp 'androidx.room:room-compiler:2.6.1'
 
-    // رسوم بيانية
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
-    // تشفير PIN
     implementation 'androidx.security:security-crypto:1.1.0-alpha06'
 }
