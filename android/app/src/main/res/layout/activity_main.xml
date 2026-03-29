@@ -13,7 +13,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="BD2 Monitor"
+            android:text="BD² Monitor"
             android:textColor="#00b4d8"
             android:textSize="22sp"
             android:textStyle="bold"/>
@@ -240,7 +240,17 @@
             android:layout_height="52dp"
             android:text="👤 ملف المريض / Profil Patient"
             android:backgroundTint="#1a3a5c"
-            android:textColor="#00f5a0"/>
+            android:textColor="#00f5a0"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/btnDoctor"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="🏥 دخول الطبيب / Accès Médecin"
+            android:backgroundTint="#0d1f3c"
+            android:textColor="#c77dff"
+            android:layout_marginBottom="12dp"/>
 
     </LinearLayout>
 </ScrollView>
