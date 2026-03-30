@@ -1,6 +1,5 @@
 package com.bd2monitor
 
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -28,7 +27,6 @@ class DoctorDashboardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDoctorDashboardBinding
     private lateinit var db: AppDatabase
 
-    // ← ضع مفتاح Gemini هنا
     private val GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,11 +54,75 @@ class DoctorDashboardActivity : AppCompatActivity() {
             }
 
             showPatientInfo(profile)
-            showAlerts(records)
             showStats(records)
             setupMoodEnergyChart(records.take(30).reversed())
             setupSleepChart(records.take(30).reversed())
+
+            // ── خوارزمية التنبير المبكر ──
+            val warningResult = withContext(Dispatchers.IO) {
+                EarlyWarningEngine.analyze(records)
+            }
+            showWarningResult(warningResult)
         }
+    }
+
+    // ═══════════════════════════════════════
+    // عرض نتيجة خوارزمية التنبير المبكر
+    // ═══════════════════════════════════════
+    private fun showWarningResult(result: EarlyWarningEngine.WarningResult) {
+
+        // لون ومستوى الخطر
+        val (riskColor, riskEmoji, riskText) = when (result.riskLevel) {
+            EarlyWarningEngine.RiskLevel.STABLE   -> Triple("#00f5a0", "🟢", "مستقر / Stable")
+            EarlyWarningEngine.RiskLevel.MONITOR  -> Triple("#ffd60a", "🟡", "مراقبة / Surveiller")
+            EarlyWarningEngine.RiskLevel.ALERT    -> Triple("#ff9f43", "🟠", "تنبيه / Alerte")
+            EarlyWarningEngine.RiskLevel.CRITICAL -> Triple("#ff6b6b", "🔴", "حرج / Critique")
+        }
+
+        // نقطة المخاطرة
+        binding.txtRiskScore.text = "${result.riskScore}"
+        binding.txtRiskScore.setTextColor(Color.parseColor(riskColor))
+        binding.txtRiskLevel.text = "$riskEmoji $riskText"
+        binding.txtRiskLevel.setTextColor(Color.parseColor(riskColor))
+
+        // نوع الخطر
+        val warningTypeText = when (result.warningType) {
+            EarlyWarningEngine.WarningType.MANIA_RISK       -> "⚡ خطر هوس / Risque maniaque"
+            EarlyWarningEngine.WarningType.DEPRESSION_RISK  -> "💧 خطر اكتئاب / Risque dépressif"
+            EarlyWarningEngine.WarningType.MIXED_RISK       -> "〰️ نوبة مختلطة / Épisode mixte"
+            EarlyWarningEngine.WarningType.MEDICATION_RISK  -> "💊 خطر دوائي / Risque médicamenteux"
+            EarlyWarningEngine.WarningType.NONE             -> "✅ لا خطر محدد / Aucun risque"
+        }
+        binding.txtWarningType.text = warningTypeText
+
+        // الاتجاه
+        val trendText = when (result.trendDetected) {
+            EarlyWarningEngine.TrendType.RISING   -> "📈 اتجاه تصاعدي"
+            EarlyWarningEngine.TrendType.FALLING  -> "📉 اتجاه تنازلي"
+            EarlyWarningEngine.TrendType.VOLATILE -> "〰️ تذبذب حاد"
+            EarlyWarningEngine.TrendType.NONE     -> "➡️ مستقر"
+        }
+        binding.txtTrend.text = trendText
+
+        // الخط الأساسي
+        binding.txtBaseline.text = buildString {
+            append("Baseline — ")
+            append("مزاج: ${String.format("%.1f", result.baselineMood)} | ")
+            append("نوم: ${String.format("%.1f", result.baselineSleep)}س | ")
+            append("طاقة: ${String.format("%.1f", result.baselineEnergy)}")
+        }
+
+        // التنبيهات
+        if (result.alerts.isEmpty()) {
+            binding.txtAlerts.text = "✅ لا توجد تنبيهات"
+            binding.txtAlerts.setTextColor(Color.parseColor("#00f5a0"))
+        } else {
+            binding.txtAlerts.text = result.alerts.joinToString("\n")
+            binding.txtAlerts.setTextColor(Color.parseColor("#ffd60a"))
+        }
+
+        // التوصيات
+        binding.txtRecommendations.text = result.recommendations.joinToString("\n") { "• $it" }
     }
 
     private fun showPatientInfo(profile: PatientProfile?) {
@@ -75,54 +137,6 @@ class DoctorDashboardActivity : AppCompatActivity() {
             📞 الهاتف: ${profile.phone}
             💼 ${profile.job}
         """.trimIndent()
-    }
-
-    private fun showAlerts(records: List<DailyRecord>) {
-        val alerts = StringBuilder()
-        val last7 = records.take(7)
-
-        if (last7.isEmpty()) {
-            binding.txtAlerts.text = "لا توجد بيانات كافية للتحليل"
-            return
-        }
-
-        // تحذير هوس: مزاج > 7 لأكثر من 3 أيام
-        val highMoodDays = last7.count { it.mood >= 8 }
-        if (highMoodDays >= 3) {
-            alerts.appendLine("🔴 تحذير: مزاج مرتفع (≥8) لـ $highMoodDays أيام متتالية — خطر هوس")
-        }
-
-        // تحذير اكتئاب: مزاج < 3 لأكثر من 3 أيام
-        val lowMoodDays = last7.count { it.mood <= 3 }
-        if (lowMoodDays >= 3) {
-            alerts.appendLine("🔴 تحذير: مزاج منخفض (≤3) لـ $lowMoodDays أيام — خطر اكتئاب")
-        }
-
-        // تحذير نوم: أقل من 4 ساعات
-        val poorSleepDays = last7.count { it.sleepHours < 4 }
-        if (poorSleepDays >= 2) {
-            alerts.appendLine("🟠 تحذير: نوم < 4 ساعات لـ $poorSleepDays أيام")
-        }
-
-        // تحذير عدم الانتظام في الدواء
-        val missedMeds = last7.count { !it.medicationTaken }
-        if (missedMeds >= 2) {
-            alerts.appendLine("🟡 تحذير: فوّت الدواء $missedMeds أيام من آخر 7")
-        }
-
-        // طاقة مرتفعة جداً
-        val highEnergyDays = last7.count { it.energy >= 8 }
-        if (highEnergyDays >= 3) {
-            alerts.appendLine("🟠 تحذير: طاقة مفرطة (≥8) لـ $highEnergyDays أيام")
-        }
-
-        if (alerts.isEmpty()) {
-            binding.txtAlerts.text = "✅ لا توجد مؤشرات تحذيرية — الحالة مستقرة"
-            binding.txtAlerts.setTextColor(Color.parseColor("#00f5a0"))
-        } else {
-            binding.txtAlerts.text = alerts.toString().trim()
-            binding.txtAlerts.setTextColor(Color.parseColor("#ffd60a"))
-        }
     }
 
     private fun showStats(records: List<DailyRecord>) {
@@ -147,82 +161,63 @@ class DoctorDashboardActivity : AppCompatActivity() {
         val moodDataSet = LineDataSet(moodEntries, "المزاج").apply {
             color = Color.parseColor("#00b4d8")
             setCircleColor(Color.parseColor("#00b4d8"))
-            lineWidth = 2f
-            circleRadius = 3f
-            setDrawValues(false)
+            lineWidth = 2f; circleRadius = 3f; setDrawValues(false)
         }
-
         val energyDataSet = LineDataSet(energyEntries, "الطاقة").apply {
             color = Color.parseColor("#ffd60a")
             setCircleColor(Color.parseColor("#ffd60a"))
-            lineWidth = 2f
-            circleRadius = 3f
-            setDrawValues(false)
+            lineWidth = 2f; circleRadius = 3f; setDrawValues(false)
         }
 
         val labels = records.map { it.date.takeLast(5) }
-
         binding.chartMoodEnergy.apply {
             data = LineData(moodDataSet, energyDataSet)
             xAxis.apply {
                 valueFormatter = IndexAxisValueFormatter(labels)
                 position = XAxis.XAxisPosition.BOTTOM
                 textColor = Color.parseColor("#5b8db8")
-                granularity = 1f
-                setDrawGridLines(false)
+                granularity = 1f; setDrawGridLines(false)
             }
             axisLeft.apply {
                 textColor = Color.parseColor("#5b8db8")
-                axisMinimum = 0f
-                axisMaximum = 10f
-                setDrawGridLines(true)
-                gridColor = Color.parseColor("#1a3a5c")
+                axisMinimum = 0f; axisMaximum = 10f
+                setDrawGridLines(true); gridColor = Color.parseColor("#1a3a5c")
             }
             axisRight.isEnabled = false
             legend.textColor = Color.WHITE
             description.isEnabled = false
             setBackgroundColor(Color.TRANSPARENT)
-            animateX(800)
-            invalidate()
+            animateX(800); invalidate()
         }
     }
 
     private fun setupSleepChart(records: List<DailyRecord>) {
         if (records.isEmpty()) return
 
-        val sleepEntries = records.mapIndexed { i, r ->
-            BarEntry(i.toFloat(), r.sleepHours)
-        }
-
+        val sleepEntries = records.mapIndexed { i, r -> BarEntry(i.toFloat(), r.sleepHours) }
         val sleepDataSet = BarDataSet(sleepEntries, "النوم (ساعات)").apply {
-            color = Color.parseColor("#00f5a0")
-            setDrawValues(false)
+            color = Color.parseColor("#00f5a0"); setDrawValues(false)
         }
 
         val labels = records.map { it.date.takeLast(5) }
-
         binding.chartSleep.apply {
             data = BarData(sleepDataSet)
             xAxis.apply {
                 valueFormatter = IndexAxisValueFormatter(labels)
                 position = XAxis.XAxisPosition.BOTTOM
                 textColor = Color.parseColor("#5b8db8")
-                granularity = 1f
-                setDrawGridLines(false)
+                granularity = 1f; setDrawGridLines(false)
             }
             axisLeft.apply {
                 textColor = Color.parseColor("#5b8db8")
-                axisMinimum = 0f
-                axisMaximum = 24f
-                setDrawGridLines(true)
-                gridColor = Color.parseColor("#1a3a5c")
+                axisMinimum = 0f; axisMaximum = 24f
+                setDrawGridLines(true); gridColor = Color.parseColor("#1a3a5c")
             }
             axisRight.isEnabled = false
             legend.textColor = Color.WHITE
             description.isEnabled = false
             setBackgroundColor(Color.TRANSPARENT)
-            animateY(800)
-            invalidate()
+            animateY(800); invalidate()
         }
     }
 
@@ -233,12 +228,8 @@ class DoctorDashboardActivity : AppCompatActivity() {
         binding.btnGenerateReport.isEnabled = false
 
         lifecycleScope.launch {
-            val records = withContext(Dispatchers.IO) {
-                db.recordDao().getAll().take(7)
-            }
-            val profile = withContext(Dispatchers.IO) {
-                db.patientProfileDao().getProfileDirect()
-            }
+            val records = withContext(Dispatchers.IO) { db.recordDao().getAll().take(7) }
+            val profile = withContext(Dispatchers.IO) { db.patientProfileDao().getProfileDirect() }
 
             if (records.isEmpty()) {
                 binding.progressReport.visibility = View.GONE
@@ -247,6 +238,8 @@ class DoctorDashboardActivity : AppCompatActivity() {
                     "لا توجد بيانات كافية", Toast.LENGTH_SHORT).show()
                 return@launch
             }
+
+            val warningResult = EarlyWarningEngine.analyze(records)
 
             val patientInfo = if (profile != null)
                 "المريض: ${profile.firstName} ${profile.lastName}, العمر: ${profile.age} سنة"
@@ -258,30 +251,32 @@ class DoctorDashboardActivity : AppCompatActivity() {
                 "ملاحظة: ${r.note.ifEmpty { "—" }}"
             }
 
+            val riskSummary = """
+                نقطة المخاطرة: ${warningResult.riskScore}/100
+                مستوى الخطر: ${warningResult.riskLevel}
+                نوع الخطر: ${warningResult.warningType}
+                الاتجاه: ${warningResult.trendDetected}
+                التنبيهات: ${warningResult.alerts.joinToString(" | ")}
+            """.trimIndent()
+
             val prompt = """
-                أنت طبيب نفسي متخصص في اضطراب ثنائي القطب (Bipolar Disorder).
-                اكتب تقريراً طبياً بصيغة SOAP باللغتين العربية والفرنسية بناءً على هذه البيانات:
+                أنت طبيب نفسي متخصص في اضطراب ثنائي القطب.
+                اكتب تقريراً طبياً بصيغة SOAP باللغتين العربية والفرنسية.
                 
                 $patientInfo
                 
                 البيانات (آخر 7 أيام):
                 $recordsSummary
                 
+                تحليل خوارزمية التنبير المبكر:
+                $riskSummary
+                
                 الهيكل المطلوب:
                 ═══ RAPPORT SOAP / تقرير SOAP ═══
-                
                 S — Subjective / ذاتي:
-                [ما يُبلّغ عنه المريض]
-                
                 O — Objective / موضوعي:
-                [القيم الرقمية والأنماط]
-                
                 A — Assessment / التقييم:
-                [التحليل السريري وعلاقته بثنائي القطب]
-                
                 P — Plan / الخطة:
-                [التوصيات العلاجية والمتابعة]
-                
                 ══════════════════════════════════
                 التقرير للاستخدام البحثي الطبي المتخصص.
             """.trimIndent()
@@ -304,9 +299,7 @@ class DoctorDashboardActivity : AppCompatActivity() {
 
     private fun exportCsv() {
         lifecycleScope.launch {
-            val records = withContext(Dispatchers.IO) {
-                db.recordDao().getAll()
-            }
+            val records = withContext(Dispatchers.IO) { db.recordDao().getAll() }
 
             if (records.isEmpty()) {
                 Toast.makeText(this@DoctorDashboardActivity,
@@ -319,7 +312,6 @@ class DoctorDashboardActivity : AppCompatActivity() {
                     SimpleDateFormat("yyyyMMdd_HHmm", Locale.getDefault()).format(Date())
                 }.csv"
                 val file = File(getExternalFilesDir(null), fileName)
-
                 file.writeText(buildString {
                     appendLine("date,mood,energy,sleep_hours,medication_taken,steps,note")
                     records.forEach { r ->
@@ -330,7 +322,7 @@ class DoctorDashboardActivity : AppCompatActivity() {
             }
 
             Toast.makeText(this@DoctorDashboardActivity,
-                "✅ تم التصدير في مجلد التطبيق / Exporté avec succès",
+                "✅ تم التصدير / Exporté avec succès",
                 Toast.LENGTH_LONG).show()
         }
     }
@@ -365,8 +357,6 @@ class DoctorDashboardActivity : AppCompatActivity() {
                 .getJSONArray("parts")
                 .getJSONObject(0)
                 .getString("text")
-        } catch (e: Exception) {
-            null
-        }
+        } catch (e: Exception) { null }
     }
 }
