@@ -27,7 +27,7 @@ class DoctorDashboardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDoctorDashboardBinding
     private lateinit var db: AppDatabase
 
-    private val GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
+    private val GEMINI_API_KEY = "AIzaSyAWk3_oXjZ_uiv9qhfGMxTQguACjYVtvT8"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
