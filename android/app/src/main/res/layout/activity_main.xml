@@ -216,6 +216,34 @@
             android:textSize="16sp"
             android:layout_marginBottom="12dp"/>
 
+        <!-- أزرار التقييم السريري -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <Button
+                android:id="@+id/btnYmrs"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:text="⚡ YMRS"
+                android:backgroundTint="#1a1a3a"
+                android:textColor="#ffd60a"
+                android:layout_marginEnd="6dp"/>
+
+            <Button
+                android:id="@+id/btnMadrs"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:text="💧 MADRS"
+                android:backgroundTint="#1a1a3a"
+                android:textColor="#00b4d8"/>
+
+        </LinearLayout>
+
         <Button
             android:id="@+id/btnHistory"
             android:layout_width="match_parent"
@@ -249,8 +277,7 @@
             android:layout_height="52dp"
             android:text="🏥 دخول الطبيب / Accès Médecin"
             android:backgroundTint="#0d1f3c"
-            android:textColor="#c77dff"
-            android:layout_marginBottom="12dp"/>
+            android:textColor="#c77dff"/>
 
     </LinearLayout>
 </ScrollView>
