@@ -1,0 +1,337 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#060d1a">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="💧 تقييم الاكتئاب / Évaluation Dépression (MADRS)"
+            android:textColor="#00b4d8"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="0 = لا إطلاقاً | 1 = نادراً | 2 = أحياناً | 3 = غالباً | 4 = دائماً"
+            android:textColor="#5b8db8"
+            android:textSize="11sp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- السؤال 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1. هل تشعر بحزن أو فراغ داخلي؟"
+                android:textColor="#e2f0ff"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+
+            <SeekBar
+                android:id="@+id/seekMadrs1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="4"
+                android:progress="0"/>
+
+            <TextView
+                android:id="@+id/txtMadrs1Val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#00b4d8"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- السؤال 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="2. هل فقدت الاهتمام بالأشياء التي كنت تحبها؟"
+                android:textColor="#e2f0ff"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+
+            <SeekBar
+                android:id="@+id/seekMadrs2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="4"
+                android:progress="0"/>
+
+            <TextView
+                android:id="@+id/txtMadrs2Val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#00b4d8"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- السؤال 3 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="3. هل تشعر بتعب وعدم طاقة للقيام بالأنشطة اليومية؟"
+                android:textColor="#e2f0ff"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+
+            <SeekBar
+                android:id="@+id/seekMadrs3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="4"
+                android:progress="0"/>
+
+            <TextView
+                android:id="@+id/txtMadrs3Val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#00b4d8"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- السؤال 4 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="4. هل تجد صعوبة في النوم أو تنام أكثر من المعتاد؟"
+                android:textColor="#e2f0ff"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+
+            <SeekBar
+                android:id="@+id/seekMadrs4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="4"
+                android:progress="0"/>
+
+            <TextView
+                android:id="@+id/txtMadrs4Val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#00b4d8"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- السؤال 5 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="5. هل تشعر بأنك عبء على من حولك؟"
+                android:textColor="#e2f0ff"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+
+            <SeekBar
+                android:id="@+id/seekMadrs5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="4"
+                android:progress="0"/>
+
+            <TextView
+                android:id="@+id/txtMadrs5Val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#00b4d8"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- السؤال 6 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="6. هل تجد صعوبة في التركيز أو اتخاذ القرارات؟"
+                android:textColor="#e2f0ff"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+
+            <SeekBar
+                android:id="@+id/seekMadrs6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="4"
+                android:progress="0"/>
+
+            <TextView
+                android:id="@+id/txtMadrs6Val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#00b4d8"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- السؤال 7 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="14dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="7. هل راودتك أفكار عن إيذاء النفس أو أنك لا تريد الاستمرار؟"
+                android:textColor="#e2f0ff"
+                android:textSize="13sp"
+                android:layout_marginBottom="8dp"/>
+
+            <SeekBar
+                android:id="@+id/seekMadrs7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="4"
+                android:progress="0"/>
+
+            <TextView
+                android:id="@+id/txtMadrs7Val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#00b4d8"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:layout_marginTop="4dp"/>
+        </LinearLayout>
+
+        <!-- النتيجة -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="16dp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="المجموع / Total"
+                android:textColor="#5b8db8"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/txtMadrsTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0 / 28"
+                android:textColor="#00b4d8"
+                android:textSize="32sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/txtMadrsLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="طبيعي"
+                android:textColor="#00f5a0"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnSaveMadrs"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="💾 حفظ التقييم / Enregistrer"
+            android:backgroundTint="#0077b6"
+            android:textColor="#ffffff"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="رجوع / Retour"
+            android:backgroundTint="#1a3a5c"
+            android:textColor="#ffffff"/>
+
+    </LinearLayout>
+</ScrollView>
