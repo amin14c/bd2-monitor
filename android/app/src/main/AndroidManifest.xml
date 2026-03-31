@@ -47,6 +47,14 @@
             android:name=".DoctorDashboardActivity"
             android:exported="false"/>
 
+        <activity
+            android:name=".YmrsActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".MadrsActivity"
+            android:exported="false"/>
+
         <receiver
             android:name=".MedicationReceiver"
             android:exported="false"/>
