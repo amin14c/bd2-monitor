@@ -9,16 +9,18 @@ import androidx.room.RoomDatabase
     entities = [
         DailyRecord::class,
         Medication::class,
-        PatientProfile::class   // تمت إضافة PatientProfile
+        PatientProfile::class,
+        AssessmentRecord::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun recordDao(): RecordDao
     abstract fun medicationDao(): MedicationDao
-    abstract fun patientProfileDao(): PatientProfileDao   // تمت إضافة DAO الخاص بالمرضى
+    abstract fun patientProfileDao(): PatientProfileDao
+    abstract fun assessmentDao(): AssessmentDao
 
     companion object {
         @Volatile
